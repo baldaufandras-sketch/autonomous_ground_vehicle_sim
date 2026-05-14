@@ -27,5 +27,7 @@ void Vehicle::setSteeringAngle(double steering_angle) {
 
 void Vehicle::update(TimeStep dt) {
   state_.speed += dt.seconds * input_.acceleration;
-  state_.heading = input_.steering_angle;
+  // state_.heading = input_.steering_angle;
+  state_.x += state_.speed * dt.seconds * cos(state_.heading);
+  state_.y += state_.speed * dt.seconds * sin(state_.heading);
 }

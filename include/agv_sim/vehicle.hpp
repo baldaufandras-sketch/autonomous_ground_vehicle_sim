@@ -1,5 +1,6 @@
 #pragma once
 #include "agv_sim/simulation_config.hpp"
+#include <cmath>
 
 struct VehicleState {
   double x;

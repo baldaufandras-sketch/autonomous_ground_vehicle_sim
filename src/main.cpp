@@ -5,7 +5,8 @@
 #include <vector>
 
 int main() {
-  SimulationConfig config{5, 0.01};
+  constexpr double pi = 3.14159265358979323846;
+  SimulationConfig config{5, 0.1};
   VehicleState init_state{.x = 0.0, .y = 5.0, .speed = 4.0, .heading = 0.0};
   Vehicle bmw{init_state};
   std::vector<Waypoint> waypoints{
