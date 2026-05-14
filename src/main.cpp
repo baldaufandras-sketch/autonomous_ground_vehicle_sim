@@ -1,18 +1,25 @@
+#include "agv_sim/simulation.hpp"
 #include "agv_sim/vehicle.hpp"
-//#include "agv_sim/simulation_config.hpp"
+#include <fstream>
 #include <iostream>
-using namespace std;
+#include <vector>
 
-int main()
-{
-    SimulationConfig config{0.01};
-    VehicleState init_state{
-    .x = 0.0,
-    .y = 5.0,
-    .speed = 0.0,
-    .heading = 0.0
-    };
-    Vehicle vehicle{init_state};
-    cout << vehicle.getY() << endl;
-    return 0;
+int main() {
+  SimulationConfig config{5, 0.01};
+  VehicleState init_state{.x = 0.0, .y = 5.0, .speed = 4.0, .heading = 0.0};
+  Vehicle bmw{init_state};
+  std::vector<Waypoint> waypoints{
+      {0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {3.0, 0.0}, {4.0, 0.0}};
+
+  SimulationLog log = runSimulation(bmw, waypoints, config);
+
+  std::ofstream file("data/simulation_log.csv");
+
+  file << "time,x,y,speed,heading,acceleration,steering_angle\n";
+
+  for (const auto &sample : log) {
+    file << sample.time << "," << sample.x << "," << sample.y << ","
+         << sample.speed << "," << sample.heading << "," << sample.acceleration
+         << "," << sample.steering_angle << "\n";
+  }
 }

@@ -1,39 +1,37 @@
 #pragma once
 #include "agv_sim/simulation_config.hpp"
-struct VehicleState
-{
-    double x;
-    double y;
-    double speed;
-    double heading;
+
+struct VehicleState {
+  double x;
+  double y;
+  double speed;
+  double heading;
 };
 
-struct VehicleInput
-{
-    double acceleration;
-    double steering_angle;
+struct VehicleInput {
+  double acceleration;
+  double steering_angle;
 };
 
-class Vehicle
-{
+class Vehicle {
 public:
-    explicit Vehicle(const VehicleState& initial_state);
+  explicit Vehicle(const VehicleState &initial_state);
 
-    VehicleState getState() const;
+  VehicleState getState() const;
 
-    double getX() const;
-    double getY() const;
-    double getSpeed() const;
-    double getHeading() const;
+  double getX() const;
+  double getY() const;
+  double getSpeed() const;
+  double getHeading() const;
 
-    double getAcceleration() const;
-    double getSteeringAngle() const;
+  double getAcceleration() const;
+  double getSteeringAngle() const;
 
-    void setAcceleration(double acceleration);
-    void setSteeringAngle(double steering_angle);
-    void update(double dt);
+  void setAcceleration(double acceleration);
+  void setSteeringAngle(double steering_angle);
+  void update(TimeStep dt);
 
 private:
-    VehicleState state_;
-    VehicleInput input_;
+  VehicleState state_;
+  VehicleInput input_;
 };

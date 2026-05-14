@@ -5,6 +5,7 @@ project(MySimulation LANGUAGES CXX)
 add_executable(simulator
     src/main.cpp
     src/vehicle.cpp
+    src/simulation.cpp
 )
 
 target_include_directories(simulator PRIVATE include)

@@ -1,5 +1,4 @@
-struct Waypoint
-{
-    double x;
-    double y;
+struct Waypoint {
+  double x;
+  double y;
 };

@@ -1,6 +1,9 @@
 #pragma once
+struct TimeStep {
+  double seconds;
+};
 
-struct SimulationConfig
-{
-    double dt;
+struct SimulationConfig {
+  double end_time;
+  TimeStep dt;
 };
