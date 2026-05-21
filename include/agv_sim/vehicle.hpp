@@ -16,7 +16,8 @@ struct VehicleInput {
 
 class Vehicle {
 public:
-  explicit Vehicle(const VehicleState &initial_state);
+    explicit Vehicle(const VehicleState &initial_state, double l_f = 0.3,
+                   double l_r = 0.3);
 
   VehicleState getState() const;
 
@@ -33,6 +34,8 @@ public:
   void update(TimeStep dt);
 
 private:
+  double l_f_; // COG to front axle
+  double l_r_; // COG to rear axle
   VehicleState state_;
   VehicleInput input_;
 };

@@ -6,12 +6,12 @@
 
 int main() {
   constexpr double pi = 3.14159265358979323846;
-  SimulationConfig config{5, 0.1};
-  VehicleState init_state{.x = 0.0, .y = 5.0, .speed = 4.0, .heading = 0.0};
+  SimulationConfig config{10, 0.1};
+  VehicleState init_state{.x = 0.0, .y = 5.0, .speed = 4.0, .heading = pi};
   Vehicle bmw{init_state};
   std::vector<Waypoint> waypoints{
       {0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {3.0, 0.0}, {4.0, 0.0}};
-
+  bmw.setSteeringAngle(pi / 180);
   SimulationLog log = runSimulation(bmw, waypoints, config);
 
   std::ofstream file("data/simulation_log.csv");
