@@ -17,3 +17,14 @@ The naming convention is as following:
 - x_dot and y_dot are the velocities in x-y directions
 - speed is a scalar (it is the length of the velicoty vector)
 - steering angle is the angle of the wheels compared to the vehicle axis. Positive is counterclockwise.
+
+![SAE Coordinate system](images/coodinate_system.png)
+
+## Kinematic Bicycle Model
+
+The classic kinematic bicylce model is described all over the literature. This project is implemented corresponding to the explanation on the [channel of Prof. Georg Schildbach.](https://www.youtube.com/watch?v=HqNdBiej23I) 
+
+The equations implemented:
+
+<img src="images/kinematic_equations.png" width="50%">
+
