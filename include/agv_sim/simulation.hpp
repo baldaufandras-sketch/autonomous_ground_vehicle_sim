@@ -1,5 +1,6 @@
 #pragma once
 
+#include "agv_sim/pure_pursuit_controller.hpp"
 #include "agv_sim/simulation_config.hpp"
 #include "agv_sim/vehicle.hpp"
 #include "agv_sim/waypoint.hpp"
@@ -20,4 +21,5 @@ using SimulationLog = std::vector<SimulationSample>;
 
 SimulationLog runSimulation(Vehicle &vehicle,
                             const std::vector<Waypoint> &waypoints,
-                            const SimulationConfig &config);
+                            const SimulationConfig &config,
+                            PurePursuitController &controller);

@@ -17,6 +17,10 @@ double Vehicle::getHeading() const { return state_.heading; }
 
 double Vehicle::getSteeringAngle() const { return input_.steering_angle; }
 
+double Vehicle::getWheelbase() const { return (l_f_ + l_r_); }
+
+VehicleState Vehicle::getVehicleState() const { return state_; }
+
 void Vehicle::setAcceleration(double acceleration) {
   input_.acceleration = acceleration;
 }

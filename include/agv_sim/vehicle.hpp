@@ -16,7 +16,7 @@ struct VehicleInput {
 
 class Vehicle {
 public:
-    explicit Vehicle(const VehicleState &initial_state, double l_f = 0.3,
+  explicit Vehicle(const VehicleState &initial_state, double l_f = 0.3,
                    double l_r = 0.3);
 
   VehicleState getState() const;
@@ -28,6 +28,8 @@ public:
 
   double getAcceleration() const;
   double getSteeringAngle() const;
+  double getWheelbase() const;
+  VehicleState getVehicleState() const;
 
   void setAcceleration(double acceleration);
   void setSteeringAngle(double steering_angle);
