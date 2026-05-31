@@ -6,7 +6,6 @@ SimulationLog runSimulation(Vehicle &vehicle,
                             const SimulationConfig &config,
                             PurePursuitController &controller) {
   SimulationLog log;
-  VehicleInput nextInput{.acceleration = 0, .steering_angle = 0};
 
   double time = 0.0;
 
@@ -17,8 +16,10 @@ SimulationLog runSimulation(Vehicle &vehicle,
                    vehicle.getSteeringAngle()});
 
     // update controller
-    nextInput = controller.computeControl(vehicle.getVehicleState(), waypoints);
-
+    const VehicleInput nextInput =
+        controller.computeControl(vehicle.getVehicleState(), waypoints);
+    // update vehicle input
+    vehicle.setInput(nextInput);
     // update vehicle state
     vehicle.update(config.dt);
 

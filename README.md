@@ -43,10 +43,18 @@ Python Visualization
 ## Road map
 
 Version 0.1 - a.k.a "Get it running"
+
 - Project environment (Git repo, folder structure etc.) is set up
 - Executable runs from terminal
 - There is a vehicle which moves in a straight line with a predetermined speed
 - CSV logfile is generated, which contains time, x, y, heading, speed, steering angle
 - Basic informations on the console (sim started, ended, log created etc.)
+
+Version 0.2 – "Hot Pursuit"
+
+- Vehicle tracks a predefined path using a Pure Pursuit controller
+- Unit test infrastructure is established using GoogleTest and CTest
+- Basic validation scenarios pass, including straight-line, slalom, and circular paths in multiple directions
+- Basic visualization tools are available for analyzing simulation results, including reference vs. actual trajectory and steering angle over time
 
 

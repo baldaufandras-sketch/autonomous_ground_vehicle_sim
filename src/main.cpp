@@ -8,7 +8,7 @@
 int main() {
   constexpr double pi = 3.14159265358979323846;
   double lookahead_distance{0.2};
-  SimulationConfig config{10, 0.1};
+  SimulationConfig config{5, 0.1};
   VehicleState init_state{.x = 0.0, .y = 5.0, .speed = 4.0, .heading = 0};
   Vehicle bmw{init_state};
   PurePursuitController pursuit_controller{lookahead_distance,

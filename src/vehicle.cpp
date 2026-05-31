@@ -29,6 +29,10 @@ void Vehicle::setSteeringAngle(double steering_angle) {
   input_.steering_angle = steering_angle;
 }
 
+void Vehicle::setInput(VehicleInput controller_request) {
+  input_ = controller_request;
+}
+
 void Vehicle::update(TimeStep dt) {
   double x_dot{0};
   double y_dot{0};

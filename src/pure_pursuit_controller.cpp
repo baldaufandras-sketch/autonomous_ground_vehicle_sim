@@ -21,5 +21,5 @@ Point2D PurePursuitController::findLookaheadPoint(
 double
 PurePursuitController::computeSteeringAngle(const VehicleState &state,
                                             const Point2D &target_point) const {
-  return 0.0;
+  return (3.14 / 20);
 }

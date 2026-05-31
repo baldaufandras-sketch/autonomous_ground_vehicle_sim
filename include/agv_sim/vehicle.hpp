@@ -33,6 +33,7 @@ public:
 
   void setAcceleration(double acceleration);
   void setSteeringAngle(double steering_angle);
+  void setInput(VehicleInput controller_request);
   void update(TimeStep dt);
 
 private:
