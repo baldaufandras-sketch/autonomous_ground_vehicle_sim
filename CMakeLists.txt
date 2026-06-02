@@ -48,7 +48,4 @@ target_link_libraries(test_pure_pursuit_controller
     GTest::gtest_main
 )
 
-add_test(
-    NAME test_pure_pursuit_controller
-    COMMAND test_pure_pursuit_controller
-)
+gtest_discover_tests(test_pure_pursuit_controller)

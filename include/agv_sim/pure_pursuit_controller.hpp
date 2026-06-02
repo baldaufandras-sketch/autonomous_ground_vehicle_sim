@@ -1,29 +1,34 @@
 #pragma once
 
+#include <cmath>
 #include <vector>
 
 #include "agv_sim/vehicle.hpp"
 #include "agv_sim/waypoint.hpp"
-
-struct Point2D {
-  double x{};
-  double y{};
-};
 
 class PurePursuitController {
 public:
   PurePursuitController(double lookahead_distance, double wheelbase);
 
   VehicleInput computeControl(const VehicleState &state,
-                              const std::vector<Waypoint> &waypoints) const;
+                              const std::vector<Waypoint> &waypoints);
+
+  std::size_t getCurrentWaypointIndex() const;
+  void setLookaheadDistance(double lookAhead);
+
+  void reset(std::size_t start_index);
 
 private:
-  Point2D findLookaheadPoint(const VehicleState &state,
-                             const std::vector<Waypoint> &waypoints) const;
+  Waypoint findLookaheadPoint(const VehicleState &state,
+                              const std::vector<Waypoint> &waypoints) const;
 
   double computeSteeringAngle(const VehicleState &state,
-                              const Point2D &target_point) const;
+                              const Waypoint &target_point) const;
 
-  double lookahead_distance_{};
+  void updateCurrentWaypoint(const VehicleState &state,
+                             const std::vector<Waypoint> &waypoints);
+
+    double lookahead_distance_{};
   double wheelbase_{};
+  std::size_t current_waypoint_index_{0};
 };

@@ -56,5 +56,6 @@ Version 0.2 – "Hot Pursuit"
 - Unit test infrastructure is established using GoogleTest and CTest
 - Basic validation scenarios pass, including straight-line, slalom, and circular paths in multiple directions
 - Basic visualization tools are available for analyzing simulation results, including reference vs. actual trajectory and steering angle over time
+- Limitations can be set on the actuators (rate limiter, minimum and maximum values for e.g. steering angle)
 
 
