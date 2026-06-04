@@ -52,7 +52,6 @@ Waypoint PurePursuitController::findLookaheadPoint(
   double incline = (x_current_waypoint - x_prev_waypoint) /
                    (y_current_waypoint - y_prev_waypoint);
   double offset = x_prev_waypoint - incline * y_prev_waypoint;
-  std::cout << "incline: " << incline << " and offset: " << offset << std::endl;
   // The lookahead point is also exactly at the lookahead distance away from the
   // vehicle position Solving the equations results in a quadrazical equation,
   // where the constanst are the following:
@@ -102,7 +101,15 @@ void PurePursuitController::updateCurrentWaypoint(
 double PurePursuitController::computeSteeringAngle(
     const VehicleState &state, const Waypoint &target_point) const {
   // TODO
-  return (3.14 / 20);
+  double dx = target_point.x - state.x;
+  double dy = target_point.y - state.y;
+
+  double target_heading = std::atan2(dy, dx);
+  double alpha = target_heading - state.heading;
+
+  double steering_angle_target =
+      std::atan2(2 * wheelbase_ * std::sin(alpha), lookahead_distance_);
+  return steering_angle_target;
 }
 
 void PurePursuitController::reset(std::size_t start_index = 0) {

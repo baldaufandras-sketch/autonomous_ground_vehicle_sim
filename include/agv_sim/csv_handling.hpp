@@ -4,3 +4,4 @@
 #include <iostream>
 
 void writeLogToFile(const SimulationLog &log);
+void waypointsToFile(const std::vector<Waypoint> &waypoints);

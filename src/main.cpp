@@ -7,15 +7,17 @@
 
 int main() {
   constexpr double pi = 3.14159265358979323846;
-  double lookahead_distance{0.2};
-  SimulationConfig config{5, 0.1};
-  VehicleState init_state{.x = 0.0, .y = 5.0, .speed = 4.0, .heading = 0};
+  double lookahead_distance{2};
+  SimulationConfig config{15, 0.1};
+  VehicleState init_state{.x = -1.0, .y = 0.0, .speed = 5, .heading = 0};
   Vehicle bmw{init_state};
   PurePursuitController pursuit_controller{lookahead_distance,
                                            bmw.getWheelbase()};
-  std::vector<Waypoint> waypoints{
-      {0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {3.0, 0.0}, {4.0, 0.0}};
+  std::vector<Waypoint> waypoints{{0.0, 0.0},   {10.0, 0.0}, {20.0, 3.0},
+                                  {30.0, -3.0}, {40.0, 3.0}, {50.0, -3.0},
+                                  {60.0, 3.0},  {70.0, 0.0}};
   bmw.setSteeringAngle(0);
   SimulationLog log = runSimulation(bmw, waypoints, config, pursuit_controller);
   writeLogToFile(log);
+  waypointsToFile(waypoints);
 }

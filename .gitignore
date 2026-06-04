@@ -68,8 +68,8 @@ vcpkg_installed/
 Testing/
 .cache/
 
-# generated simulation log file
-data/simulation_log.csv
+# generated log files
+data/
 
 # VS code settings
 .vscode/

@@ -11,3 +11,13 @@ void writeLogToFile(const SimulationLog &log) {
          << "," << sample.steering_angle << "\n";
   }
 }
+
+void waypointsToFile(const std::vector<Waypoint> &waypoints) {
+  std::ofstream waypoint_file("data/waypoints.csv");
+
+  waypoint_file << "x,y\n";
+
+  for (const auto &wp : waypoints) {
+    waypoint_file << wp.x << "," << wp.y << "\n";
+  }
+}

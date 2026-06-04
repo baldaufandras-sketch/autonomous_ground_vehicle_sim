@@ -1,5 +1,6 @@
 #include "agv_sim/simulation.hpp"
 #include "agv_sim/pure_pursuit_controller.hpp"
+#include <iostream>
 
 SimulationLog runSimulation(Vehicle &vehicle,
                             const std::vector<Waypoint> &waypoints,
