@@ -18,17 +18,17 @@ public:
 
   void reset(std::size_t start_index);
 
-private:
   Waypoint findLookaheadPoint(const VehicleState &state,
                               const std::vector<Waypoint> &waypoints) const;
 
+private:
   double computeSteeringAngle(const VehicleState &state,
                               const Waypoint &target_point) const;
 
   void updateCurrentWaypoint(const VehicleState &state,
                              const std::vector<Waypoint> &waypoints);
 
-    double lookahead_distance_{};
+  double lookahead_distance_{};
   double wheelbase_{};
   std::size_t current_waypoint_index_{0};
 };

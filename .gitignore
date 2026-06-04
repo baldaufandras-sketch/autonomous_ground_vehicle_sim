@@ -73,3 +73,6 @@ data/simulation_log.csv
 
 # VS code settings
 .vscode/
+
+# temporary scripts
+scratch/

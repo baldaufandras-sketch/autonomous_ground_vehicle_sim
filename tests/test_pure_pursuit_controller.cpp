@@ -46,3 +46,33 @@ TEST_F(PurePursuitControllerTest, findLastPoint) {
   controller.computeControl(state, waypoints);
   EXPECT_EQ(controller.getCurrentWaypointIndex(), 4);
 }
+
+// Lookahead point finder tests
+class PurePursuitLookaheadTest : public ::testing::Test {
+protected:
+  double lookahead_distance{0.5};
+  PurePursuitController controller{lookahead_distance, 1};
+  std::vector<Waypoint> waypoints{
+      {0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {3.0, 1.0}, {5.0, 2.0}};
+
+  VehicleState state{0.0, 0.0, 0.0, 1.0};
+};
+
+TEST_F(PurePursuitLookaheadTest, alongXAxis) {
+  controller.reset(1);
+  Waypoint lookahead_point = controller.findLookaheadPoint(state, waypoints);
+
+  EXPECT_NEAR(lookahead_point.x, 0.5, 1e-6);
+  EXPECT_NEAR(lookahead_point.y, 0, 1e-6);
+}
+
+TEST_F(PurePursuitLookaheadTest, randomPoint) {
+  controller.reset(4);
+  state.x = 3;
+  state.y = 1.5;
+  controller.setLookaheadDistance(1);
+  Waypoint lookahead_point = controller.findLookaheadPoint(state, waypoints);
+
+  EXPECT_NEAR(lookahead_point.x, 4, 1e-6);
+  EXPECT_NEAR(lookahead_point.y, 1.5, 1e-6);
+}
