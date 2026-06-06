@@ -29,3 +29,12 @@ SimulationLog runSimulation(Vehicle &vehicle,
 
   return log;
 }
+
+namespace {
+void validateState(const VehicleState &state) {
+  if (std::isnan(state.x) || std::isnan(state.y) || std::isnan(state.yaw) ||
+      std::isnan(state.velocity)) {
+    throw std::runtime_error("Vehicle state contains NaN");
+  }
+}
+} // namespace
