@@ -40,6 +40,9 @@ void Vehicle::update(TimeStep dt) {
   double beta{0};
 
   state_.speed += dt.seconds * input_.acceleration;
+  if (state_.speed < 0) {
+    state_.speed = 0;
+  }
   beta = atan(l_r_ / (l_r_ + l_f_) * tan(input_.steering_angle));
   x_dot = state_.speed * cos(state_.heading + beta);
   y_dot = state_.speed * sin(state_.heading + beta);

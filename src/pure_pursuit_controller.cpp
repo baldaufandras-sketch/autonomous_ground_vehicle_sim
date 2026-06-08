@@ -1,6 +1,7 @@
 #include "agv_sim/pure_pursuit_controller.hpp"
 #include <cmath>
 #include <iostream>
+#include <optional>
 
 PurePursuitController::PurePursuitController(double lookahead_distance,
                                              double wheelbase)
@@ -9,6 +10,7 @@ PurePursuitController::PurePursuitController(double lookahead_distance,
 VehicleInput
 PurePursuitController::computeControl(const VehicleState &state,
                                       const std::vector<Waypoint> &waypoints) {
+  VehicleInput controllerOutput{};
   // First current waypoint index shall be updated
   updateCurrentWaypoint(state, waypoints);
 
@@ -17,8 +19,13 @@ PurePursuitController::computeControl(const VehicleState &state,
 
   // After the lookahead point is known, the steering angle can be calculated
   double steering_angle = computeSteeringAngle(state, target_point);
-
-  return VehicleInput{.acceleration = 0, .steering_angle = steering_angle};
+  controllerOutput.steering_angle = steering_angle;
+  if (current_waypoint_index_ == (waypoints.size() - 1)) {
+    controllerOutput.acceleration = -3;
+  } else {
+    controllerOutput.acceleration = 0;
+  }
+  return controllerOutput;
 }
 
 Waypoint PurePursuitController::findLookaheadPoint(
@@ -28,52 +35,17 @@ Waypoint PurePursuitController::findLookaheadPoint(
     lookahead_point = waypoints[0];
     return lookahead_point;
   }
-  // The lookahead point can be found on the line connecting the current target
-  // waypoint and the previous waypoint offset and incline is of this line
-  double x_current_waypoint = waypoints[current_waypoint_index_].x;
-  double y_current_waypoint = waypoints[current_waypoint_index_].y;
-  double x_prev_waypoint = waypoints[current_waypoint_index_ - 1].x;
-  double y_prev_waypoint = waypoints[current_waypoint_index_ - 1].y;
+  std::optional<Waypoint> intersection = findLookaheadPointOnPathSegment(
+      state, waypoints[current_waypoint_index_ - 1],
+      waypoints[current_waypoint_index_], lookahead_distance_);
 
-  if (std::abs(y_current_waypoint - y_prev_waypoint) < 0.05) {
-    lookahead_point.y = (y_current_waypoint + y_prev_waypoint) / 2;
-    double delta_y = y_current_waypoint - state.y;
-    double direction{1};
-    if (x_current_waypoint < state.x) {
-      direction = -1;
-    }
-    lookahead_point.x =
-        state.x +
-        direction * std::sqrt(lookahead_distance_ * lookahead_distance_ -
-                              delta_y * delta_y);
-    return lookahead_point;
-  }
-
-  double incline = (x_current_waypoint - x_prev_waypoint) /
-                   (y_current_waypoint - y_prev_waypoint);
-  double offset = x_prev_waypoint - incline * y_prev_waypoint;
-  // The lookahead point is also exactly at the lookahead distance away from the
-  // vehicle position Solving the equations results in a quadrazical equation,
-  // where the constanst are the following:
-  double a = incline * incline + 1;
-  double b = 2 * (incline * offset - incline * state.x - state.y);
-  double c = offset * offset + state.x * state.x + state.y * state.y -
-             2 * offset * state.x - lookahead_distance_ * lookahead_distance_;
-  // And solving the quadratical equation for x:
-  double y_1 = (-b + sqrt(b * b - 4 * a * c)) / (2 * a);
-  double y_2 = (-b - sqrt(b * b - 4 * a * c)) / (2 * a);
-  // std::cout << "first solution: " << x_1 << std::endl;
-  // std::cout << "second solution: " << x_2 << std::endl;
-  //  The real lookahead point is always between the vehicle and the next
-  //  targetpoint
-  if ((state.y <= y_1 && y_1 <= y_current_waypoint) ||
-      (y_current_waypoint <= y_1 && y_1 <= state.y)) {
-    lookahead_point.y = y_1;
+  if (intersection.has_value()) {
+    return intersection.value();
+    // use target
   } else {
-    lookahead_point.y = y_2;
+    return waypoints[current_waypoint_index_]; // no intersection: controller
+                                               // decides fallback behavior
   }
-  lookahead_point.x = incline * lookahead_point.y + offset;
-  return lookahead_point;
 }
 
 void PurePursuitController::updateCurrentWaypoint(

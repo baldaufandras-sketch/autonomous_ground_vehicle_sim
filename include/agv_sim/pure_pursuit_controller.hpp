@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cmath>
 #include <vector>
 
+#include "agv_sim/path_geometry.hpp"
 #include "agv_sim/vehicle.hpp"
 #include "agv_sim/waypoint.hpp"
 

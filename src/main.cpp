@@ -7,9 +7,9 @@
 
 int main() {
   constexpr double pi = 3.14159265358979323846;
-  double lookahead_distance{2};
+  double lookahead_distance{1};
   SimulationConfig config{15, 0.1};
-  VehicleState init_state{.x = -1.0, .y = 0.0, .speed = 5, .heading = 0};
+  VehicleState init_state{.x = -1.0, .y = 0.0, .speed = 10, .heading = 0};
   Vehicle bmw{init_state};
   PurePursuitController pursuit_controller{lookahead_distance,
                                            bmw.getWheelbase()};
