@@ -14,6 +14,8 @@ std::optional<Waypoint> findLookaheadPointOnPathSegment(
   double y_prev_waypoint = waypoint_1.y;
 
   if (std::abs(y_current_waypoint - y_prev_waypoint) < 0.05) {
+    // If delta_y approaches 0, atan(delta_x/delta_y)later on will not be
+    // calculable
     lookahead_point.y = (y_current_waypoint + y_prev_waypoint) / 2;
     double delta_y = y_current_waypoint - state.y;
     double direction{1};

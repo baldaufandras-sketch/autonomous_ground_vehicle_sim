@@ -1,13 +1,18 @@
 #include <gtest/gtest.h>
 
+#include "agv_sim/constants.hpp"
 #include "agv_sim/pure_pursuit_controller.hpp"
 #include "agv_sim/vehicle.hpp"
 #include <vector>
 
 class PurePursuitControllerTest : public ::testing::Test {
 protected:
-  double lookahead_distance{0.5};
-  PurePursuitController controller{lookahead_distance, 1};
+  PurePursuitConfig controllerConfig{
+      .lookahead_distance = 1,
+      .wheelbase = 1,
+      .fallback_steering_angle = constants::pi / 9,
+  };
+  PurePursuitController controller{controllerConfig};
 
   std::vector<Waypoint> waypoints{
       {0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {3.0, 1.0}, {5.0, 2.0}};
@@ -50,8 +55,12 @@ TEST_F(PurePursuitControllerTest, findLastPoint) {
 // Lookahead point finder tests
 class PurePursuitLookaheadTest : public ::testing::Test {
 protected:
-  double lookahead_distance{0.5};
-  PurePursuitController controller{lookahead_distance, 1};
+  PurePursuitConfig controllerConfig{
+      .lookahead_distance = 1,
+      .wheelbase = 1,
+      .fallback_steering_angle = constants::pi / 9,
+  };
+  PurePursuitController controller{controllerConfig};
   std::vector<Waypoint> waypoints{
       {0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {3.0, 1.0}, {5.0, 2.0}};
 

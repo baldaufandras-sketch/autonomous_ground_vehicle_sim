@@ -58,4 +58,12 @@ Version 0.2 – "Hot Pursuit"
 - Basic visualization tools are available for analyzing simulation results, including reference vs. actual trajectory and steering angle over time
 - Limitations can be set on the actuators (rate limiter, minimum and maximum values for e.g. steering angle)
 
+Version 0.3 - "Tie up Loose Ends"
+
+- The Pure Pursuit controller handles the end-of-path condition and brings the vehicle to a stop
+- A fallback mode is implemented for situations where the vehicle is oriented away from the path
+- Additional plotting and visualization tools are added to support controller analysis and debugging
+- Steering actuator limitations are modeled, including maximum steering angle and steering rate limits
+- Numerical validity checks are added to detect invalid simulation statesr
+
 

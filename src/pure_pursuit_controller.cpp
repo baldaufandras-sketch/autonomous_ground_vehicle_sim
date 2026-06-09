@@ -1,11 +1,11 @@
 #include "agv_sim/pure_pursuit_controller.hpp"
+#include "agv_sim/constants.hpp"
 #include <cmath>
 #include <iostream>
 #include <optional>
 
-PurePursuitController::PurePursuitController(double lookahead_distance,
-                                             double wheelbase)
-    : lookahead_distance_{lookahead_distance}, wheelbase_{wheelbase} {}
+PurePursuitController::PurePursuitController(const PurePursuitConfig &config)
+    : config_{config} {}
 
 VehicleInput
 PurePursuitController::computeControl(const VehicleState &state,
@@ -13,18 +13,12 @@ PurePursuitController::computeControl(const VehicleState &state,
   VehicleInput controllerOutput{};
   // First current waypoint index shall be updated
   updateCurrentWaypoint(state, waypoints);
-
   // After the target waypoint is known, the lookahead point can be calculated
   Waypoint target_point = findLookaheadPoint(state, waypoints);
+  // After the lookahead point is known, the Control Output can be calculated
+  controllerOutput.steering_angle = computeSteeringAngle(state, target_point);
+  controllerOutput.acceleration = computeAcceleration(waypoints);
 
-  // After the lookahead point is known, the steering angle can be calculated
-  double steering_angle = computeSteeringAngle(state, target_point);
-  controllerOutput.steering_angle = steering_angle;
-  if (current_waypoint_index_ == (waypoints.size() - 1)) {
-    controllerOutput.acceleration = -3;
-  } else {
-    controllerOutput.acceleration = 0;
-  }
   return controllerOutput;
 }
 
@@ -37,14 +31,14 @@ Waypoint PurePursuitController::findLookaheadPoint(
   }
   std::optional<Waypoint> intersection = findLookaheadPointOnPathSegment(
       state, waypoints[current_waypoint_index_ - 1],
-      waypoints[current_waypoint_index_], lookahead_distance_);
+      waypoints[current_waypoint_index_], config_.lookahead_distance);
 
   if (intersection.has_value()) {
     return intersection.value();
     // use target
   } else {
-    return waypoints[current_waypoint_index_]; // no intersection: controller
-                                               // decides fallback behavior
+    // no intersection can be found, next waypoint is the fallback
+    return waypoints[current_waypoint_index_];
   }
 }
 
@@ -59,7 +53,7 @@ void PurePursuitController::updateCurrentWaypoint(
     dx = state.x - waypoints[i].x;
     dy = state.y - waypoints[i].y;
     distance_to_waypoint = std::sqrt(dx * dx + dy * dy);
-    if (distance_to_waypoint >= lookahead_distance_) {
+    if (distance_to_waypoint >= config_.lookahead_distance) {
       break;
     }
     if (target_index == max_waypoint) {
@@ -72,16 +66,30 @@ void PurePursuitController::updateCurrentWaypoint(
 
 double PurePursuitController::computeSteeringAngle(
     const VehicleState &state, const Waypoint &target_point) const {
-  // TODO
   double dx = target_point.x - state.x;
   double dy = target_point.y - state.y;
 
   double target_heading = std::atan2(dy, dx);
   double alpha = target_heading - state.heading;
+  if (std::abs(alpha) > (constants::pi / 2) &&
+      std::abs(alpha) < (1.5 * constants::pi)) {
+    // If the vehicle faces away from the waypoint, a constant steering angle is
+    // applied to turn back
+    return std::copysign(config_.fallback_steering_angle, alpha);
+  }
 
-  double steering_angle_target =
-      std::atan2(2 * wheelbase_ * std::sin(alpha), lookahead_distance_);
+  double steering_angle_target = std::atan2(
+      2 * config_.wheelbase * std::sin(alpha), config_.lookahead_distance);
   return steering_angle_target;
+}
+
+double PurePursuitController::computeAcceleration(
+    const std::vector<Waypoint> &waypoints) const {
+  if (current_waypoint_index_ == (waypoints.size() - 1)) {
+    return -3;
+  } else {
+    return 0;
+  }
 }
 
 void PurePursuitController::reset(std::size_t start_index = 0) {
@@ -93,5 +101,5 @@ std::size_t PurePursuitController::getCurrentWaypointIndex() const {
 }
 
 void PurePursuitController::setLookaheadDistance(double lookAhead) {
-  lookahead_distance_ = lookAhead;
+  config_.lookahead_distance = lookAhead;
 }

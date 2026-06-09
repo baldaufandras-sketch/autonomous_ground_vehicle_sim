@@ -6,9 +6,15 @@
 #include "agv_sim/vehicle.hpp"
 #include "agv_sim/waypoint.hpp"
 
+struct PurePursuitConfig {
+  double lookahead_distance;
+  double wheelbase;
+  double fallback_steering_angle;
+};
+
 class PurePursuitController {
 public:
-  PurePursuitController(double lookahead_distance, double wheelbase);
+  PurePursuitController(const PurePursuitConfig &config);
 
   VehicleInput computeControl(const VehicleState &state,
                               const std::vector<Waypoint> &waypoints);
@@ -28,7 +34,8 @@ private:
   void updateCurrentWaypoint(const VehicleState &state,
                              const std::vector<Waypoint> &waypoints);
 
-  double lookahead_distance_{};
-  double wheelbase_{};
+  double computeAcceleration(const std::vector<Waypoint> &waypoints) const;
+
+  PurePursuitConfig config_{};
   std::size_t current_waypoint_index_{0};
 };
