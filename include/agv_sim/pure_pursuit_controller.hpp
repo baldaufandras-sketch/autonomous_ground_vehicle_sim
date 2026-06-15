@@ -12,6 +12,14 @@ struct PurePursuitConfig {
   double fallback_steering_angle;
 };
 
+struct ControllerDebugInfo {
+  std::size_t current_waypoint_index{};
+  double target_x{};
+  double target_y{};
+  double pursuit_controller_alpha{};
+  double steering_angle_request{};
+};
+
 class PurePursuitController {
 public:
   PurePursuitController(const PurePursuitConfig &config);
@@ -26,10 +34,11 @@ public:
 
   Waypoint findLookaheadPoint(const VehicleState &state,
                               const std::vector<Waypoint> &waypoints) const;
+  ControllerDebugInfo getControllerDebugInfo() const;
 
 private:
   double computeSteeringAngle(const VehicleState &state,
-                              const Waypoint &target_point) const;
+                              const Waypoint &target_point);
 
   void updateCurrentWaypoint(const VehicleState &state,
                              const std::vector<Waypoint> &waypoints);
@@ -38,4 +47,5 @@ private:
 
   PurePursuitConfig config_{};
   std::size_t current_waypoint_index_{0};
+  ControllerDebugInfo debug_info_;
 };

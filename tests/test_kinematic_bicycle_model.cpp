@@ -9,8 +9,7 @@ TEST(KinematicBicycleModelBasicTest, StraightLineZeroSteering) {
 
   Vehicle vehicle(initial_state);
 
-  vehicle.setAcceleration(0.0);
-  vehicle.setSteeringAngle(0.0);
+  vehicle.setInput({0.0, 0.0});
 
   TimeStep dt{1.0};
 
@@ -36,8 +35,7 @@ protected:
     VehicleState initial_state{0.0, 0.0, speed_value, heading};
     Vehicle vehicle(initial_state);
 
-    vehicle.setAcceleration(0.0);
-    vehicle.setSteeringAngle(0.0);
+    vehicle.setInput({0.0, 0.0});
 
     TimeStep dt{dt_seconds};
 

@@ -4,13 +4,15 @@
 #include "agv_sim/simulation.hpp"
 #include "agv_sim/vehicle.hpp"
 
+#include <iostream>
 #include <vector>
 
 int main() {
-  double lookahead_distance{1};
-  SimulationConfig simConfig{15, 0.01};
+  double lookahead_distance{5};
+  SimulationConfig simConfig{5, 0.1};
+  VehicleLimits limits{constants::pi / 60.0, constants::pi / 180};
   VehicleState init_state{
-      .x = -1.0, .y = 0.0, .speed = 10, .heading = constants::pi};
+      .x = -1.0, .y = 0.0, .speed = 10, .heading = 0, .steering_angle = 0.0};
   Vehicle bmw{init_state};
   PurePursuitConfig controllerConfig{.lookahead_distance = 1,
                                      .wheelbase = bmw.getWheelbase(),
@@ -18,9 +20,10 @@ int main() {
                                          constants::pi / 9};
   PurePursuitController pursuit_controller{controllerConfig};
   std::vector<Waypoint> waypoints{{0.0, 0.0},   {10.0, 0.0}, {20.0, 3.0},
-                                  {30.0, -3.0}, {40.0, 3.0}, {50.0, -3.0},
+                                  {30.0, -6.0}, {40.0, 6.0}, {50.0, -6.0},
                                   {60.0, 3.0},  {70.0, 0.0}};
-  bmw.setSteeringAngle(0);
+
+  std::cout << "Starting simulation..." << std::endl;
   SimulationLog log =
       runSimulation(bmw, waypoints, simConfig, pursuit_controller);
   writeLogToFile(log);

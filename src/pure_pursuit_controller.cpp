@@ -16,8 +16,16 @@ PurePursuitController::computeControl(const VehicleState &state,
   // After the target waypoint is known, the lookahead point can be calculated
   Waypoint target_point = findLookaheadPoint(state, waypoints);
   // After the lookahead point is known, the Control Output can be calculated
-  controllerOutput.steering_angle = computeSteeringAngle(state, target_point);
+  controllerOutput.steering_angle_request =
+      computeSteeringAngle(state, target_point);
   controllerOutput.acceleration = computeAcceleration(waypoints);
+  debug_info_ = {
+      .current_waypoint_index = current_waypoint_index_,
+      .target_x = target_point.x,
+      .target_y = target_point.y,
+      .pursuit_controller_alpha = 0.0,
+      .steering_angle_request = controllerOutput.steering_angle_request,
+  };
 
   return controllerOutput;
 }
@@ -64,13 +72,14 @@ void PurePursuitController::updateCurrentWaypoint(
   }
 }
 
-double PurePursuitController::computeSteeringAngle(
-    const VehicleState &state, const Waypoint &target_point) const {
+double
+PurePursuitController::computeSteeringAngle(const VehicleState &state,
+                                            const Waypoint &target_point) {
   double dx = target_point.x - state.x;
   double dy = target_point.y - state.y;
-
+  double alpha{0};
   double target_heading = std::atan2(dy, dx);
-  double alpha = target_heading - state.heading;
+  alpha = target_heading - state.heading;
   if (std::abs(alpha) > (constants::pi / 2) &&
       std::abs(alpha) < (1.5 * constants::pi)) {
     // If the vehicle faces away from the waypoint, a constant steering angle is
@@ -80,6 +89,7 @@ double PurePursuitController::computeSteeringAngle(
 
   double steering_angle_target = std::atan2(
       2 * config_.wheelbase * std::sin(alpha), config_.lookahead_distance);
+
   return steering_angle_target;
 }
 
@@ -102,4 +112,8 @@ std::size_t PurePursuitController::getCurrentWaypointIndex() const {
 
 void PurePursuitController::setLookaheadDistance(double lookAhead) {
   config_.lookahead_distance = lookAhead;
+}
+
+ControllerDebugInfo PurePursuitController::getControllerDebugInfo() const {
+  return debug_info_;
 }

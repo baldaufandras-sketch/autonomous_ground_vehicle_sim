@@ -11,7 +11,7 @@ bool validateState(const VehicleState &state) {
 
 bool validateInput(const VehicleInput &input) {
   return std::isfinite(input.acceleration) &&
-         std::isfinite(input.steering_angle);
+         std::isfinite(input.steering_angle_request);
 }
 } // namespace
 
@@ -25,9 +25,8 @@ SimulationLog runSimulation(Vehicle &vehicle,
 
   while (time <= config.end_time) {
     // add current state to log
-    log.push_back({time, vehicle.getX(), vehicle.getY(), vehicle.getSpeed(),
-                   vehicle.getHeading(), vehicle.getAcceleration(),
-                   vehicle.getSteeringAngle()});
+    log.push_back(makeSimulationSample(time, vehicle,
+                                       controller.getControllerDebugInfo()));
 
     // update controller
     const VehicleInput nextInput =
@@ -39,13 +38,30 @@ SimulationLog runSimulation(Vehicle &vehicle,
 
     if (!validateState(vehicle.getState()) || !(validateInput(nextInput))) {
       std::cerr << "Invalid state at t=" << time << "\n";
-      log.push_back({time, vehicle.getX(), vehicle.getY(), vehicle.getSpeed(),
-                     vehicle.getHeading(), vehicle.getAcceleration(),
-                     vehicle.getSteeringAngle()});
+      log.push_back(makeSimulationSample(time, vehicle,
+                                         controller.getControllerDebugInfo()));
       break;
     }
     time += config.dt.seconds;
   }
 
   return log;
+}
+
+SimulationSample
+makeSimulationSample(double time, const Vehicle &vehicle,
+                     const ControllerDebugInfo &controller_info) {
+  return SimulationSample{
+      .time = time,
+      .x = vehicle.getX(),
+      .y = vehicle.getY(),
+      .speed = vehicle.getSpeed(),
+      .heading = vehicle.getHeading(),
+      .acceleration = vehicle.getAcceleration(),
+      .steering_angle_actual = vehicle.getSteeringAngle(),
+      .steering_angle_request = controller_info.steering_angle_request,
+      .target_x = controller_info.target_x,
+      .target_y = controller_info.target_y,
+      .pursuit_controller_alpha = controller_info.pursuit_controller_alpha,
+      .current_waypoint_index = controller_info.current_waypoint_index};
 }
