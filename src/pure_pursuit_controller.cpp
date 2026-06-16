@@ -16,16 +16,17 @@ PurePursuitController::computeControl(const VehicleState &state,
   // After the target waypoint is known, the lookahead point can be calculated
   Waypoint target_point = findLookaheadPoint(state, waypoints);
   // After the lookahead point is known, the Control Output can be calculated
-  controllerOutput.steering_angle_request =
+  SteeringCalculationResult steeringCalcResult =
       computeSteeringAngle(state, target_point);
+  controllerOutput.steering_angle_request =
+      steeringCalcResult.steering_angle_request;
   controllerOutput.acceleration = computeAcceleration(waypoints);
-  debug_info_ = {
-      .current_waypoint_index = current_waypoint_index_,
-      .target_x = target_point.x,
-      .target_y = target_point.y,
-      .pursuit_controller_alpha = 0.0,
-      .steering_angle_request = controllerOutput.steering_angle_request,
-  };
+  debug_info_ = {.current_waypoint_index = current_waypoint_index_,
+                 .target_x = target_point.x,
+                 .target_y = target_point.y,
+                 .pursuit_controller_alpha = steeringCalcResult.alpha,
+                 .steering_angle_request =
+                     steeringCalcResult.steering_angle_request};
 
   return controllerOutput;
 }
@@ -72,25 +73,27 @@ void PurePursuitController::updateCurrentWaypoint(
   }
 }
 
-double
+SteeringCalculationResult
 PurePursuitController::computeSteeringAngle(const VehicleState &state,
                                             const Waypoint &target_point) {
+  SteeringCalculationResult steeringCalcResult{};
   double dx = target_point.x - state.x;
   double dy = target_point.y - state.y;
-  double alpha{0};
-  double target_heading = std::atan2(dy, dx);
-  alpha = target_heading - state.heading;
-  if (std::abs(alpha) > (constants::pi / 2) &&
-      std::abs(alpha) < (1.5 * constants::pi)) {
+  steeringCalcResult.target_heading = std::atan2(dy, dx);
+  steeringCalcResult.alpha = steeringCalcResult.target_heading - state.heading;
+  if (std::abs(steeringCalcResult.alpha) > (constants::pi / 2) &&
+      std::abs(steeringCalcResult.alpha) < (1.5 * constants::pi)) {
     // If the vehicle faces away from the waypoint, a constant steering angle is
     // applied to turn back
-    return std::copysign(config_.fallback_steering_angle, alpha);
+    steeringCalcResult.steering_angle_request = std::copysign(
+        config_.fallback_steering_angle, steeringCalcResult.alpha);
+    return steeringCalcResult;
   }
 
-  double steering_angle_target = std::atan2(
-      2 * config_.wheelbase * std::sin(alpha), config_.lookahead_distance);
-
-  return steering_angle_target;
+  steeringCalcResult.steering_angle_request =
+      std::atan2(2 * config_.wheelbase * std::sin(steeringCalcResult.alpha),
+                 config_.lookahead_distance);
+  return steeringCalcResult;
 }
 
 double PurePursuitController::computeAcceleration(

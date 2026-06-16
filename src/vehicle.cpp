@@ -59,6 +59,4 @@ void Vehicle::update(TimeStep dt) {
 
 void Vehicle::updateSteeringAngle(double steering_angle_request, TimeStep dt) {
   state_.steering_angle = std::clamp(steering_angle_request, -0.3, 0.3);
-  std::cout << "steering angle updated to: " << state_.steering_angle
-            << std::endl;
 }

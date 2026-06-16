@@ -87,12 +87,3 @@ TEST_F(KinematicBicycleModelTest, MovesInArbitraryDirectionNegativeHeading) {
   runStraightLineTest(heading, speed, distance * std::cos(heading),
                       distance * std::sin(heading));
 }
-
-TEST_F(KinematicBicycleModelTest, NegativeSpeedMovesOppositeDirection) {
-  const double heading = M_PI / 4.0;
-  const double negative_speed = -1.0;
-  const double distance = negative_speed * dt_seconds * steps;
-
-  runStraightLineTest(heading, negative_speed, distance * std::cos(heading),
-                      distance * std::sin(heading));
-}

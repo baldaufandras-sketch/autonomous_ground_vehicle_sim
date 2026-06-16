@@ -64,14 +64,17 @@ protected:
   std::vector<Waypoint> waypoints{
       {0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {3.0, 1.0}, {5.0, 2.0}};
 
-  VehicleState state{0.0, 0.0, 0.0, 1.0};
+  VehicleState state{
+      .x = 0.0, .y = 0.0, .speed = 1.0, .heading = 0.0, .steering_angle = 0.0};
 };
 
 TEST_F(PurePursuitLookaheadTest, alongXAxis) {
   controller.reset(1);
+  state.x = 0.5;
+  state.y = 0;
   Waypoint lookahead_point = controller.findLookaheadPoint(state, waypoints);
 
-  EXPECT_NEAR(lookahead_point.x, 0.5, 1e-6);
+  EXPECT_NEAR(lookahead_point.x, 1.5, 1e-6);
   EXPECT_NEAR(lookahead_point.y, 0, 1e-6);
 }
 

@@ -8,13 +8,13 @@
 #include <vector>
 
 int main() {
-  double lookahead_distance{5};
-  SimulationConfig simConfig{5, 0.1};
+  double lookahead_distance{3};
+  SimulationConfig simConfig{10, 0.1};
   VehicleLimits limits{constants::pi / 60.0, constants::pi / 180};
   VehicleState init_state{
-      .x = -1.0, .y = 0.0, .speed = 10, .heading = 0, .steering_angle = 0.0};
+      .x = -1.0, .y = 0.0, .speed = 16, .heading = 0, .steering_angle = 0.0};
   Vehicle bmw{init_state};
-  PurePursuitConfig controllerConfig{.lookahead_distance = 1,
+  PurePursuitConfig controllerConfig{.lookahead_distance = lookahead_distance,
                                      .wheelbase = bmw.getWheelbase(),
                                      .fallback_steering_angle =
                                          constants::pi / 9};

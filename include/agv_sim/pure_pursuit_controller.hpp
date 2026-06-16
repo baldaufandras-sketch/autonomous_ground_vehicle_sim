@@ -20,6 +20,12 @@ struct ControllerDebugInfo {
   double steering_angle_request{};
 };
 
+struct SteeringCalculationResult {
+    double steering_angle_request{};
+    double alpha{};
+    double target_heading{};
+};
+
 class PurePursuitController {
 public:
   PurePursuitController(const PurePursuitConfig &config);
@@ -37,7 +43,7 @@ public:
   ControllerDebugInfo getControllerDebugInfo() const;
 
 private:
-  double computeSteeringAngle(const VehicleState &state,
+  SteeringCalculationResult computeSteeringAngle(const VehicleState &state,
                               const Waypoint &target_point);
 
   void updateCurrentWaypoint(const VehicleState &state,
