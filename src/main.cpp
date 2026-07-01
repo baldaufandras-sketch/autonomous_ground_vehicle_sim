@@ -10,10 +10,10 @@
 int main() {
   double lookahead_distance{3};
   SimulationConfig simConfig{10, 0.1};
-  VehicleLimits limits{constants::pi / 60.0, constants::pi / 180};
+  VehicleLimits bmw_limits{constants::pi / 24.0, constants::pi / 180};
   VehicleState init_state{
       .x = -1.0, .y = 0.0, .speed = 16, .heading = 0, .steering_angle = 0.0};
-  Vehicle bmw{init_state};
+  Vehicle bmw{init_state, bmw_limits};
   PurePursuitConfig controllerConfig{.lookahead_distance = lookahead_distance,
                                      .wheelbase = bmw.getWheelbase(),
                                      .fallback_steering_angle =

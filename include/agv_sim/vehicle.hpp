@@ -30,6 +30,9 @@ public:
                    VehicleLimits limits = {constants::pi / 6.0,
                                            constants::pi / 18});
 
+  Vehicle(const VehicleState &initial_state, VehicleLimits limits)
+      : Vehicle(initial_state, 0.3, 0.3, limits) {}
+
   VehicleState getState() const;
 
   double getX() const;
@@ -51,6 +54,7 @@ private:
   double l_f_; // COG to front axle
   double l_r_; // COG to rear axle
   void updateSteeringAngle(double steering_angle_request, TimeStep dt);
+  void updateSpeed(TimeStep dt);
 
   VehicleState state_;
   VehicleInput input_;

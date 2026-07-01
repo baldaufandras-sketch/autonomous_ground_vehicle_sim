@@ -23,7 +23,7 @@ struct SimulationSample {
   size_t current_waypoint_index;
 
   static std::string csvHeader() {
-    return "time,x,y,speed,heading,acceleration,steering_angle_actual_deg,"
+    return "time,x,y,speed,heading_deg,acceleration,steering_angle_actual_deg,"
            "steering_angle_request_deg, target_x, "
            "target_y,pursuit_controller_alpha_deg,"
            "current_waypoint_index";
@@ -31,10 +31,11 @@ struct SimulationSample {
 
   std::string toCsvRow() const {
     std::ostringstream row;
-    row << time << "," << x << "," << y << "," << speed << "," << heading << ","
-        << acceleration << "," << steering_angle_actual * constants::rad_to_deg
-        << "," << steering_angle_request * constants::rad_to_deg << ","
-        << target_x << "," << target_y << ","
+    row << time << "," << x << "," << y << "," << speed << ","
+        << heading * constants::rad_to_deg << "," << acceleration << ","
+        << steering_angle_actual * constants::rad_to_deg << ","
+        << steering_angle_request * constants::rad_to_deg << "," << target_x
+        << "," << target_y << ","
         << pursuit_controller_alpha * constants::rad_to_deg << ","
         << current_waypoint_index;
 

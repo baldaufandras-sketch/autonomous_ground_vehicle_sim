@@ -25,8 +25,6 @@ SimulationLog runSimulation(Vehicle &vehicle,
 
   while (time <= config.end_time) {
     // add current state to log
-    log.push_back(makeSimulationSample(time, vehicle,
-                                       controller.getControllerDebugInfo()));
 
     // update controller
     const VehicleInput nextInput =
@@ -35,7 +33,8 @@ SimulationLog runSimulation(Vehicle &vehicle,
     vehicle.setInput(nextInput);
     // update vehicle state
     vehicle.update(config.dt);
-
+    log.push_back(makeSimulationSample(time, vehicle,
+                                       controller.getControllerDebugInfo()));
     if (!validateState(vehicle.getState()) || !(validateInput(nextInput))) {
       std::cerr << "Invalid state at t=" << time << "\n";
       log.push_back(makeSimulationSample(time, vehicle,

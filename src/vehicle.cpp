@@ -17,9 +17,7 @@ double Vehicle::getSpeed() const { return state_.speed; }
 
 double Vehicle::getHeading() const { return state_.heading; }
 
-double Vehicle::getSteeringAngle() const {
-  return input_.steering_angle_request;
-}
+double Vehicle::getSteeringAngle() const { return state_.steering_angle; }
 
 VehicleLimits Vehicle::getVehicleLimits() const { return limits_; }
 
@@ -42,10 +40,8 @@ void Vehicle::update(TimeStep dt) {
   double beta{0};
 
   updateSteeringAngle(input_.steering_angle_request, dt);
-  state_.speed += dt.seconds * input_.acceleration;
-  if (state_.speed < 0) {
-    state_.speed = 0;
-  }
+  updateSpeed(dt);
+
   beta = atan(l_r_ / (l_r_ + l_f_) * tan(state_.steering_angle));
   x_dot = state_.speed * cos(state_.heading + beta);
   y_dot = state_.speed * sin(state_.heading + beta);
@@ -56,7 +52,20 @@ void Vehicle::update(TimeStep dt) {
   state_.y += y_dot * dt.seconds;
   state_.heading += heading_dot * dt.seconds;
 }
-
+void Vehicle::updateSpeed(TimeStep dt) {
+  state_.speed += dt.seconds * input_.acceleration;
+  if (state_.speed < 0) {
+    state_.speed = 0;
+  }
+}
 void Vehicle::updateSteeringAngle(double steering_angle_request, TimeStep dt) {
-  state_.steering_angle = std::clamp(steering_angle_request, -0.3, 0.3);
+  const double max_change = limits_.maxSteeringAngleGradient * dt.seconds;
+
+  const double angle_limited_request =
+      std::clamp(steering_angle_request, -limits_.maxSteeringAngle,
+                 limits_.maxSteeringAngle);
+
+  state_.steering_angle =
+      std::clamp(angle_limited_request, state_.steering_angle - max_change,
+                 state_.steering_angle + max_change);
 }

@@ -87,3 +87,122 @@ TEST_F(KinematicBicycleModelTest, MovesInArbitraryDirectionNegativeHeading) {
   runStraightLineTest(heading, speed, distance * std::cos(heading),
                       distance * std::sin(heading));
 }
+
+TEST(VehicleSteeringLimitTest, ClampsSteeringAngleToPositiveMaximum) {
+  VehicleState initial_state{};
+  initial_state.speed = 0.0;
+  initial_state.heading = 0.0;
+  initial_state.steering_angle = 0.0;
+
+  const VehicleLimits limits{
+      constants::pi / 18.0, // max steering angle: 10 deg
+      constants::pi         // large gradient limit
+  };
+  const TimeStep dt{1.0};
+
+  Vehicle vehicle{initial_state, limits};
+
+  const double acceleration_request{0.0};
+  const double steering_angle_request{constants::pi / 6.0}; // 30 deg
+  VehicleInput inputs{acceleration_request, steering_angle_request};
+  vehicle.setInput(inputs);
+  vehicle.update(dt);
+  EXPECT_NEAR(vehicle.getState().steering_angle, constants::pi / 18.0, 1e-9);
+}
+
+TEST(VehicleSteeringLimitTest, ClampsSteeringAngleToNegativeMaximum) {
+  VehicleState initial_state{};
+  initial_state.speed = 0.0;
+  initial_state.heading = 0.0;
+  initial_state.steering_angle = 0.0;
+
+  const VehicleLimits limits{
+      constants::pi / 18.0, // max steering angle: 10 deg
+      constants::pi         // large gradient limit
+  };
+  const TimeStep dt{1.0};
+
+  Vehicle vehicle{initial_state, limits};
+
+  const double acceleration_request{0.0};
+  const double steering_angle_request{-constants::pi / 6.0}; // 30 deg
+  VehicleInput inputs{acceleration_request, steering_angle_request};
+  vehicle.setInput(inputs);
+  vehicle.update(dt);
+  EXPECT_NEAR(vehicle.getState().steering_angle, -constants::pi / 18.0, 1e-9);
+}
+
+TEST(VehicleSteeringLimitTest, LimitsPositiveSteeringAngleGradient) {
+  VehicleState initial_state{};
+  initial_state.speed = 0.0;
+  initial_state.heading = 0.0;
+  initial_state.steering_angle = 0.0;
+
+  const VehicleLimits limits{
+      constants::pi / 2.0, // large angle limit
+      constants::pi / 18.0 // 10 deg / s
+  };
+
+  const TimeStep dt{1.0};
+
+  Vehicle vehicle{initial_state, limits};
+
+  const double acceleration_request{0.0};
+  const double steering_angle_request{constants::pi / 6.0}; // 30 deg
+
+  VehicleInput inputs{acceleration_request, steering_angle_request};
+  vehicle.setInput(inputs);
+  vehicle.update(dt);
+  EXPECT_NEAR(vehicle.getState().steering_angle, constants::pi / 18.0, 1e-9);
+}
+
+TEST(VehicleSteeringLimitTest, LimitsNegativeSteeringAngleGradient) {
+  VehicleState initial_state{};
+  initial_state.speed = 0.0;
+  initial_state.heading = 0.0;
+  initial_state.steering_angle = 0.0;
+
+  const VehicleLimits limits{
+      constants::pi / 2.0, // large angle limit
+      constants::pi / 18.0 // 10 deg / s
+  };
+
+  const TimeStep dt{1.0};
+
+  Vehicle vehicle{initial_state, limits};
+
+  const double acceleration_request{0.0};
+  const double steering_angle_request{-constants::pi / 6.0}; // 30 deg
+
+  VehicleInput inputs{acceleration_request, steering_angle_request};
+  vehicle.setInput(inputs);
+  vehicle.update(dt);
+  EXPECT_NEAR(vehicle.getState().steering_angle, -constants::pi / 18.0, 1e-9);
+}
+
+TEST(VehicleSteeringLimitTest, SteeringGradientLimitScalesWithTimeStep) {
+  VehicleState initial_state{};
+  initial_state.speed = 0.0;
+  initial_state.heading = 0.0;
+  initial_state.steering_angle = 0.0;
+
+  const VehicleLimits limits{
+      constants::pi / 2.0, // large angle limit
+      constants::pi / 18.0 // 10 deg / s
+  };
+
+  const TimeStep dt{0.5};
+
+  Vehicle vehicle{initial_state, limits};
+
+  const double acceleration_request{0.0};
+  const double steering_angle_request{constants::pi / 6.0}; // 30 deg
+
+  VehicleInput inputs{acceleration_request, steering_angle_request};
+  vehicle.setInput(inputs);
+  vehicle.update(dt);
+
+  EXPECT_NEAR(vehicle.getState().steering_angle,
+              constants::pi / 36.0, // 5 deg
+              1e-9);
+}
