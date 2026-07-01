@@ -31,10 +31,11 @@ SimulationLog runSimulation(Vehicle &vehicle,
         controller.computeControl(vehicle.getVehicleState(), waypoints);
     // update vehicle input
     vehicle.setInput(nextInput);
-    // update vehicle state
-    vehicle.update(config.dt);
     log.push_back(makeSimulationSample(time, vehicle,
                                        controller.getControllerDebugInfo()));
+    // update vehicle state
+    vehicle.update(config.dt);
+
     if (!validateState(vehicle.getState()) || !(validateInput(nextInput))) {
       std::cerr << "Invalid state at t=" << time << "\n";
       log.push_back(makeSimulationSample(time, vehicle,
