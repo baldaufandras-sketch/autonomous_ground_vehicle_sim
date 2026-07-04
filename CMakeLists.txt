@@ -10,7 +10,9 @@ add_library(agv_sim_lib
     src/simulation.cpp
     src/csv_handling.cpp
     src/pure_pursuit_controller.cpp
+    src/path.cpp
     src/path_geometry.cpp
+    src/stanley_controller.cpp
 )
 
 target_include_directories(agv_sim_lib PUBLIC include)

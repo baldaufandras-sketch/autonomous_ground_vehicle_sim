@@ -1,9 +1,10 @@
 #pragma once
 
+#include "agv_sim/path.hpp"
 #include "agv_sim/pure_pursuit_controller.hpp"
 #include "agv_sim/simulation_config.hpp"
+#include "agv_sim/stanley_controller.hpp"
 #include "agv_sim/vehicle.hpp"
-#include "agv_sim/waypoint.hpp"
 #include <sstream>
 
 #include <vector>
@@ -45,10 +46,9 @@ struct SimulationSample {
 
 using SimulationLog = std::vector<SimulationSample>;
 
-SimulationLog runSimulation(Vehicle &vehicle,
-                            const std::vector<Waypoint> &waypoints,
+SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             const SimulationConfig &config,
-                            PurePursuitController &controller);
+                            StanleyController &controller);
 
 SimulationSample
 makeSimulationSample(double time, const Vehicle &vehicle,

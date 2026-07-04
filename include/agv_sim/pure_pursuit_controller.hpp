@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vector>
-
+#include "agv_sim/controller_debug_info.hpp"
+#include "agv_sim/path.hpp"
 #include "agv_sim/path_geometry.hpp"
 #include "agv_sim/vehicle.hpp"
-#include "agv_sim/waypoint.hpp"
+#include <vector>
 
 struct PurePursuitConfig {
   double lookahead_distance;
@@ -12,18 +12,10 @@ struct PurePursuitConfig {
   double fallback_steering_angle;
 };
 
-struct ControllerDebugInfo {
-  std::size_t current_waypoint_index{};
-  double target_x{};
-  double target_y{};
-  double pursuit_controller_alpha{};
-  double steering_angle_request{};
-};
-
 struct SteeringCalculationResult {
-    double steering_angle_request{};
-    double alpha{};
-    double target_heading{};
+  double steering_angle_request{};
+  double alpha{};
+  double target_heading{};
 };
 
 class PurePursuitController {
@@ -44,7 +36,7 @@ public:
 
 private:
   SteeringCalculationResult computeSteeringAngle(const VehicleState &state,
-                              const Waypoint &target_point);
+                                                 const Waypoint &target_point);
 
   void updateCurrentWaypoint(const VehicleState &state,
                              const std::vector<Waypoint> &waypoints);

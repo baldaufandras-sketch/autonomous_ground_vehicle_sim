@@ -85,3 +85,8 @@ Waypoint chooseSolution(const Waypoint wp_prev, const Waypoint wp_current,
     return solution_2;
   }
 }
+
+double dotBetweenSegments(const Waypoint &p1, const Waypoint &p2,
+                          const Waypoint &q1, const Waypoint &q2) {
+  return (p2.x - p1.x) * (q2.x - q1.x) + (p2.y - p1.y) * (q2.y - q1.y);
+}

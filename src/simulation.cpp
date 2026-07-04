@@ -1,5 +1,4 @@
 #include "agv_sim/simulation.hpp"
-#include "agv_sim/pure_pursuit_controller.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -15,10 +14,9 @@ bool validateInput(const VehicleInput &input) {
 }
 } // namespace
 
-SimulationLog runSimulation(Vehicle &vehicle,
-                            const std::vector<Waypoint> &waypoints,
+SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             const SimulationConfig &config,
-                            PurePursuitController &controller) {
+                            StanleyController &controller) {
   SimulationLog log;
 
   double time = 0.0;
@@ -28,7 +26,7 @@ SimulationLog runSimulation(Vehicle &vehicle,
 
     // update controller
     const VehicleInput nextInput =
-        controller.computeControl(vehicle.getVehicleState(), waypoints);
+        controller.computeControl(vehicle.getVehicleState(), path);
     // update vehicle input
     vehicle.setInput(nextInput);
     log.push_back(makeSimulationSample(time, vehicle,
