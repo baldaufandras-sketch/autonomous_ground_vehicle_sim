@@ -9,41 +9,77 @@ ControllerDebugInfo StanleyController::getControllerDebugInfo() const {
 
 VehicleInput StanleyController::computeControl(const VehicleState &state,
                                                const Path &path) {
-  PathSegment current_segment = findClosestSegment(path, state);
-  Waypoint closest_point{closestPointToSegment(current_segment, state)};
+  updateCurrentSegmentIndex(path, state);
+  PathSegment current_segment = path.getSegments()[current_segment_index_];
+  Waypoint closest_point{
+      projectPointToSegment(current_segment, Waypoint{state.x, state.y})
+          .closest_point};
   double lateral_error =
-      std::hypot(state.x - closest_point.x, state.y - closest_point.y);
+      calculateSignedLateralError(state, closest_point, current_segment);
   double steering_angle_request =
       (current_segment.heading - state.heading) +
       atan(config_.stanley_gain * lateral_error / (state.speed + 1));
   // TODO: with speed = -1 thos can be division by zero!
-  // std::cout << "state heading: " << state.heading << std::endl;
-  // std::cout << "lateral error: " << lateral_error << std::endl;
+  debug_info_ = {.current_waypoint_index = current_segment_index_,
+                 .steering_angle_request = steering_angle_request,
+                 .lateral_error = lateral_error};
   return VehicleInput{0, steering_angle_request};
 }
 
-Waypoint StanleyController::closestPointToSegment(const PathSegment &segment,
+void StanleyController::updateCurrentSegmentIndex(const Path &path,
                                                   const VehicleState &state) {
-  // length(std::hypot(end.x - start.x, end.y - start.y)),
-  double diff_direction =
-      dotBetweenSegments(segment.start, segment.end, segment.start,
-                         Waypoint{state.x, state.y}) /
-      (segment.length * segment.length);
-  if (diff_direction <= 0) {
-    return segment.start;
+  size_t SEARCH_WINDOW = 5;
+  size_t start_index{};
+  if (current_segment_index_ > 0) {
+    start_index = current_segment_index_ - 1;
+  } else {
+    start_index = 0;
   }
-  if (diff_direction >= 1) {
-    return segment.end;
+  size_t end_index = std::min(current_segment_index_ + SEARCH_WINDOW,
+                              path.getSegments().size() - 1);
+
+  double best_distance_sq = std::numeric_limits<double>::max();
+  double best_index_segment_parameter{0};
+
+  size_t best_index = current_segment_index_;
+
+  for (size_t i = start_index; i <= end_index; ++i) {
+    SegmentProjection closest = projectPointToSegment(
+        path.getSegments()[i], Waypoint{state.x, state.y});
+
+    if (closest.distance_sq < best_distance_sq) {
+      best_distance_sq = closest.distance_sq;
+      best_index_segment_parameter = closest.segment_parameter;
+      best_index = i;
+    }
   }
-  Waypoint projection_point{};
-  projection_point.x =
-      segment.start.x + diff_direction * (segment.end.x - segment.start.x);
-  projection_point.y =
-      segment.start.y + diff_direction * (segment.end.y - segment.start.y);
-  return projection_point;
+  if (best_index_segment_parameter >= 0.8) {
+    current_segment_index_ = std::clamp(best_index + 1, start_index, end_index);
+  } else {
+    current_segment_index_ = best_index;
+  }
 }
 
-PathSegment StanleyController::findClosestSegment(const Path &path,
-                                                  const VehicleState &state) {
-  return path.getSegments()[0];
+double
+StanleyController::calculateSignedLateralError(const VehicleState &state,
+                                               const Waypoint &closest_point,
+                                               const PathSegment &segment) {
+  const double segment_dx = segment.end.x - segment.start.x;
+  const double segment_dy = segment.end.y - segment.start.y;
+
+  const double vehicle_dx = state.x - closest_point.x;
+  const double vehicle_dy = state.y - closest_point.y;
+
+  const double cross = segment_dx * vehicle_dy - segment_dy * vehicle_dx;
+  const double distance = std::hypot(vehicle_dx, vehicle_dy);
+
+  if (cross > 0.0) {
+    return -distance;
+  }
+
+  if (cross < 0.0) {
+    return distance;
+  }
+
+  return 0.0;
 }

@@ -90,3 +90,38 @@ double dotBetweenSegments(const Waypoint &p1, const Waypoint &p2,
                           const Waypoint &q1, const Waypoint &q2) {
   return (p2.x - p1.x) * (q2.x - q1.x) + (p2.y - p1.y) * (q2.y - q1.y);
 }
+double distanceBetweenPoints(const Waypoint &a, const Waypoint &b) {
+  double dx = a.x - b.x;
+  double dy = a.y - b.y;
+  double distance_sq = dx * dx + dy * dy;
+  return distance_sq;
+}
+
+SegmentProjection projectPointToSegment(const PathSegment &segment,
+                                        const Waypoint &location) {
+  // length(std::hypot(end.x - start.x, end.y - start.y)),
+  double segment_parameter =
+      dotBetweenSegments(segment.start, segment.end, segment.start, location) /
+      (segment.length * segment.length);
+  if (segment_parameter <= 0) {
+    return SegmentProjection{
+        .closest_point = segment.start,
+        .segment_parameter = 0,
+        .distance_sq = distanceBetweenPoints(segment.start, location)};
+  }
+  if (segment_parameter >= 1) {
+    return SegmentProjection{.closest_point = segment.end,
+                             .segment_parameter = 1,
+                             .distance_sq =
+                                 distanceBetweenPoints(segment.end, location)};
+  }
+  Waypoint projection_point{};
+  projection_point.x =
+      segment.start.x + segment_parameter * (segment.end.x - segment.start.x);
+  projection_point.y =
+      segment.start.y + segment_parameter * (segment.end.y - segment.start.y);
+  return SegmentProjection{
+      .closest_point = projection_point,
+      .segment_parameter = segment_parameter,
+      .distance_sq = distanceBetweenPoints(projection_point, location)};
+}

@@ -61,5 +61,6 @@ makeSimulationSample(double time, const Vehicle &vehicle,
       .target_x = controller_info.target_x,
       .target_y = controller_info.target_y,
       .pursuit_controller_alpha = controller_info.pursuit_controller_alpha,
+      .lateral_error = controller_info.lateral_error,
       .current_waypoint_index = controller_info.current_waypoint_index};
 }

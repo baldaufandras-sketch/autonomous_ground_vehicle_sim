@@ -14,3 +14,14 @@ Waypoint chooseSolution(const Waypoint wp_prev, const Waypoint wp_curr,
 
 double dotBetweenSegments(const Waypoint &p1, const Waypoint &p2,
                           const Waypoint &q1, const Waypoint &q2);
+
+double distanceBetweenPoints(const Waypoint &a, const Waypoint &b);
+
+struct SegmentProjection {
+  Waypoint closest_point;
+  double segment_parameter;
+  double distance_sq;
+};
+
+SegmentProjection projectPointToSegment(const PathSegment &segment,
+                                        const Waypoint &location);

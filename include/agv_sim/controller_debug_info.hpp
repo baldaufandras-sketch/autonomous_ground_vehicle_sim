@@ -5,6 +5,7 @@ struct ControllerDebugInfo {
   std::size_t current_waypoint_index{};
   double target_x{};
   double target_y{};
-  double pursuit_controller_alpha{};
+  double pursuit_controller_alpha{0};
   double steering_angle_request{};
+  double lateral_error{};
 };

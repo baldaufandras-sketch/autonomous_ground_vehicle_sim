@@ -10,11 +10,11 @@
 
 int main() {
   double lookahead_distance{3};
-  SimulationConfig simConfig{5, 0.1};
+  SimulationConfig simConfig{10, 0.1};
   VehicleLimits bmw_limits{constants::pi / 6, constants::pi};
   VehicleState init_state{.x = 0.0,
                           .y = -5.0,
-                          .speed = 4,
+                          .speed = 10,
                           .heading = -constants::pi / 6,
                           .steering_angle = 0.0};
 
@@ -29,7 +29,11 @@ int main() {
 
   StanleyConfig stanley_config{2};
 
-  std::vector<Waypoint> waypoints{{0.0, 0.0}, {50.0, 20.0}};
+  std::vector<Waypoint> waypoints{{0.0, 0.0},   {10.0, 0.0}, {20.0, 3.0},
+                                  {30.0, -6.0}, {40.0, 6.0}, {50.0, -6.0},
+                                  {60.0, 3.0},  {70.0, 0.0}};
+
+  // std::vector<Waypoint> waypoints{{0.0, 0.0}, {100.0, 50.0}};
   Path path_to_follow(waypoints);
   StanleyController stanley_controller(stanley_config);
 
