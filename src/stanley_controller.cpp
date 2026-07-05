@@ -11,19 +11,24 @@ VehicleInput StanleyController::computeControl(const VehicleState &state,
                                                const Path &path) {
   updateCurrentSegmentIndex(path, state);
   PathSegment current_segment = path.getSegments()[current_segment_index_];
-  Waypoint closest_point{
-      projectPointToSegment(current_segment, Waypoint{state.x, state.y})
-          .closest_point};
+  SegmentProjection current_segment_projection =
+      projectPointToSegment(current_segment, Waypoint{state.x, state.y});
+  Waypoint closest_point{current_segment_projection.closest_point};
+  double acceleration_request = 0;
   double lateral_error =
       calculateSignedLateralError(state, closest_point, current_segment);
   double steering_angle_request =
       (current_segment.heading - state.heading) +
       atan(config_.stanley_gain * lateral_error / (state.speed + 1));
   // TODO: with speed = -1 thos can be division by zero!
+  if (current_segment_index_ >= (path.getSegments().size() - 1) &&
+      current_segment_projection.segment_parameter >= 0.9) {
+    acceleration_request = -30;
+  }
   debug_info_ = {.current_waypoint_index = current_segment_index_,
                  .steering_angle_request = steering_angle_request,
                  .lateral_error = lateral_error};
-  return VehicleInput{0, steering_angle_request};
+  return VehicleInput{acceleration_request, steering_angle_request};
 }
 
 void StanleyController::updateCurrentSegmentIndex(const Path &path,

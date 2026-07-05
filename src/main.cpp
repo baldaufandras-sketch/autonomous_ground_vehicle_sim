@@ -10,7 +10,7 @@
 
 int main() {
   double lookahead_distance{3};
-  SimulationConfig simConfig{10, 0.1};
+  SimulationConfig simConfig{15, 0.1};
   VehicleLimits bmw_limits{constants::pi / 6, constants::pi};
   VehicleState init_state{.x = 0.0,
                           .y = -5.0,
@@ -20,14 +20,12 @@ int main() {
 
   Vehicle bmw{init_state, bmw_limits};
 
-  /*PurePursuitConfig controllerConfig{.lookahead_distance = lookahead_distance,
+  PurePursuitConfig controllerConfig{.lookahead_distance = lookahead_distance,
                                      .wheelbase = bmw.getWheelbase(),
                                      .fallback_steering_angle =
                                          constants::pi / 9};
 
-  PurePursuitController pursuit_controller{controllerConfig};*/
-
-  StanleyConfig stanley_config{2};
+  PurePursuitController pursuit_controller{controllerConfig};
 
   std::vector<Waypoint> waypoints{{0.0, 0.0},   {10.0, 0.0}, {20.0, 3.0},
                                   {30.0, -6.0}, {40.0, 6.0}, {50.0, -6.0},
@@ -35,6 +33,8 @@ int main() {
 
   // std::vector<Waypoint> waypoints{{0.0, 0.0}, {100.0, 50.0}};
   Path path_to_follow(waypoints);
+
+  StanleyConfig stanley_config{2};
   StanleyController stanley_controller(stanley_config);
 
   std::cout << "Starting simulation..." << std::endl;

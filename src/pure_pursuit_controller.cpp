@@ -7,9 +7,9 @@
 PurePursuitController::PurePursuitController(const PurePursuitConfig &config)
     : config_{config} {}
 
-VehicleInput
-PurePursuitController::computeControl(const VehicleState &state,
-                                      const std::vector<Waypoint> &waypoints) {
+VehicleInput PurePursuitController::computeControl(const VehicleState &state,
+                                                   const Path &path) {
+  std::vector<Waypoint> waypoints = path.getWaypoints();
   VehicleInput controllerOutput{};
   // First current waypoint index shall be updated
   updateCurrentWaypoint(state, waypoints);

@@ -16,7 +16,7 @@ bool validateInput(const VehicleInput &input) {
 
 SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             const SimulationConfig &config,
-                            StanleyController &controller) {
+                            IPathTrackingController &controller) {
   SimulationLog log;
 
   double time = 0.0;

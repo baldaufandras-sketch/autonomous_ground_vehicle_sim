@@ -49,7 +49,7 @@ using SimulationLog = std::vector<SimulationSample>;
 
 SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             const SimulationConfig &config,
-                            StanleyController &controller);
+                            IPathTrackingController &controller);
 
 SimulationSample
 makeSimulationSample(double time, const Vehicle &vehicle,

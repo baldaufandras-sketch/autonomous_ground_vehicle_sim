@@ -66,4 +66,10 @@ Version 0.3 - "Tie up Loose Ends"
 - Steering actuator limitations are modeled, including maximum steering angle and steering rate limits
 - Numerical validity checks are added to detect invalid simulation states
 
+Version 0.4 - "Stanley Scenario"
+
+- Implement the Stanley path-tracking controller as an alternative to the existing Pure Pursuit controller.
+- Introduce a common controller interface so that different path-tracking controllers can be selected and exchanged without changing the simulation loop.
+- Add a basic scenario selection/editing workflow for running the simulation on different predefined waypoint paths.
+
 

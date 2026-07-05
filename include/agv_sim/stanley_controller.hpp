@@ -3,6 +3,7 @@
 #include "agv_sim/controller_debug_info.hpp"
 #include "agv_sim/path.hpp"
 #include "agv_sim/path_geometry.hpp"
+#include "agv_sim/path_tracking_controller_interface.hpp"
 #include "agv_sim/vehicle.hpp"
 #include <algorithm>
 #include <cstdlib>
@@ -13,15 +14,16 @@ struct StanleyConfig {
   double stanley_gain;
 };
 
-class StanleyController {
+class StanleyController : public IPathTrackingController {
 public:
-  StanleyController(const StanleyConfig &config);
+  explicit StanleyController(const StanleyConfig &config);
 
   void updateCurrentSegmentIndex(const Path &path, const VehicleState &state);
 
-  VehicleInput computeControl(const VehicleState &state, const Path &path);
+  VehicleInput computeControl(const VehicleState &state,
+                              const Path &path) override;
 
-  ControllerDebugInfo getControllerDebugInfo() const;
+  ControllerDebugInfo getControllerDebugInfo() const override;
 
 private:
   ControllerDebugInfo debug_info_;
