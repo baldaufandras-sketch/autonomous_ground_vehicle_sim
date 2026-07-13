@@ -8,9 +8,9 @@
 #include <vector>
 
 struct PurePursuitConfig {
-  double lookahead_distance;
-  double wheelbase;
-  double fallback_steering_angle;
+  double lookahead_distance{3};
+  double wheelbase{1};
+  double fallback_steering_angle{constants::pi / 6};
 };
 
 struct SteeringCalculationResult {

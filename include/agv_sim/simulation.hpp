@@ -1,12 +1,13 @@
 #pragma once
 
+#include "agv_sim/controller_spec.hpp"
 #include "agv_sim/path.hpp"
 #include "agv_sim/pure_pursuit_controller.hpp"
 #include "agv_sim/simulation_config.hpp"
 #include "agv_sim/stanley_controller.hpp"
 #include "agv_sim/vehicle.hpp"
+#include <filesystem>
 #include <sstream>
-
 #include <vector>
 
 struct SimulationSample {
@@ -47,9 +48,18 @@ struct SimulationSample {
 
 using SimulationLog = std::vector<SimulationSample>;
 
+struct Scenario {
+  std::string name;
+  VehicleSpec vehicle;
+  std::filesystem::path path_file;
+  SimulationConfig simulation_config;
+};
+
 SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             const SimulationConfig &config,
                             IPathTrackingController &controller);
+
+SimulationLog runScenario(Scenario &scenario, ControllerSpec &controller_spec);
 
 SimulationSample
 makeSimulationSample(double time, const Vehicle &vehicle,

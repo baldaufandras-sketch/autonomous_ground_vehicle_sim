@@ -11,7 +11,7 @@
 #include <vector>
 
 struct StanleyConfig {
-  double stanley_gain;
+  double stanley_gain{0.5};
 };
 
 class StanleyController : public IPathTrackingController {

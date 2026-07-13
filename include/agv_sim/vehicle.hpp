@@ -60,3 +60,8 @@ private:
   VehicleInput input_;
   VehicleLimits limits_;
 };
+
+struct VehicleSpec {
+  VehicleState initial_state;
+  VehicleLimits vehicle_limits;
+};

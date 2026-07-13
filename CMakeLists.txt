@@ -13,6 +13,7 @@ add_library(agv_sim_lib
     src/path.cpp
     src/path_geometry.cpp
     src/stanley_controller.cpp
+    src/controller_spec.cpp
 )
 
 target_include_directories(agv_sim_lib PUBLIC include)

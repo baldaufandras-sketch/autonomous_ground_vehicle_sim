@@ -18,28 +18,32 @@ int main() {
                           .heading = -constants::pi / 6,
                           .steering_angle = 0.0};
 
-  Vehicle bmw{init_state, bmw_limits};
-
-  PurePursuitConfig controllerConfig{.lookahead_distance = lookahead_distance,
+  VehicleSpec bmw_spec{init_state, bmw_limits};
+  std::string name{"basic_dstanley"};
+  ControllerSpec stanley_2_0 = makeStanleySpec(name, StanleyConfig{2});
+  /*PurePursuitConfig controllerConfig{.lookahead_distance = lookahead_distance,
                                      .wheelbase = bmw.getWheelbase(),
                                      .fallback_steering_angle =
                                          constants::pi / 9};
 
-  PurePursuitController pursuit_controller{controllerConfig};
+  PurePursuitController pursuit_controller{controllerConfig};*/
 
-  std::vector<Waypoint> waypoints{{0.0, 0.0},   {10.0, 0.0}, {20.0, 3.0},
+  /*std::vector<Waypoint> waypoints{{0.0, 0.0},   {10.0, 0.0}, {20.0, 3.0},
                                   {30.0, -6.0}, {40.0, 6.0}, {50.0, -6.0},
-                                  {60.0, 3.0},  {70.0, 0.0}};
+                                  {60.0, 3.0},  {70.0, 0.0}};*/
 
   // std::vector<Waypoint> waypoints{{0.0, 0.0}, {100.0, 50.0}};
-  Path path_to_follow(waypoints);
-
-  StanleyConfig stanley_config{2};
-  StanleyController stanley_controller(stanley_config);
+  /* struct Scenario {
+    std::string name;
+    VehicleSpec vehicle;
+    std::filesystem::path path_file;
+    SimulationConfig simulation_config;
+  };
+  */
+  std::filesystem::path wide_turn_path{"data/paths/wide_turn_path.csv"};
+  Scenario basic_stanley{"basic_stanley", bmw_spec, wide_turn_path, simConfig};
 
   std::cout << "Starting simulation..." << std::endl;
-  SimulationLog log =
-      runSimulation(bmw, path_to_follow, simConfig, stanley_controller);
+  SimulationLog log = runScenario(basic_stanley, stanley_2_0);
   writeLogToFile(log);
-  waypointsToFile(waypoints);
 }
