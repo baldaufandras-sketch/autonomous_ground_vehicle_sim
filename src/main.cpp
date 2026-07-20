@@ -1,7 +1,7 @@
 #include "agv_sim/constants.hpp"
-#include "agv_sim/csv_handling.hpp"
 #include "agv_sim/pure_pursuit_controller.hpp"
 #include "agv_sim/simulation.hpp"
+#include "agv_sim/simulation_output.hpp"
 #include "agv_sim/stanley_controller.hpp"
 #include "agv_sim/vehicle.hpp"
 
@@ -19,31 +19,22 @@ int main() {
                           .steering_angle = 0.0};
 
   VehicleSpec bmw_spec{init_state, bmw_limits};
-  std::string name{"basic_dstanley"};
+  std::string name{"basic_stanley"};
   ControllerSpec stanley_2_0 = makeStanleySpec(name, StanleyConfig{2});
-  /*PurePursuitConfig controllerConfig{.lookahead_distance = lookahead_distance,
-                                     .wheelbase = bmw.getWheelbase(),
-                                     .fallback_steering_angle =
-                                         constants::pi / 9};
+  ControllerSpec stanley_0_5 = makeStanleySpec(name, StanleyConfig{0.5});
 
-  PurePursuitController pursuit_controller{controllerConfig};*/
-
-  /*std::vector<Waypoint> waypoints{{0.0, 0.0},   {10.0, 0.0}, {20.0, 3.0},
-                                  {30.0, -6.0}, {40.0, 6.0}, {50.0, -6.0},
-                                  {60.0, 3.0},  {70.0, 0.0}};*/
-
-  // std::vector<Waypoint> waypoints{{0.0, 0.0}, {100.0, 50.0}};
-  /* struct Scenario {
-    std::string name;
-    VehicleSpec vehicle;
-    std::filesystem::path path_file;
-    SimulationConfig simulation_config;
-  };
-  */
   std::filesystem::path wide_turn_path{"data/paths/wide_turn_path.csv"};
-  Scenario basic_stanley{"basic_stanley", bmw_spec, wide_turn_path, simConfig};
-
+  std::filesystem::path s_curve{"data/paths/s_curve.csv"};
+  Scenario stanley_wide_turn{"stanley_wide_turn", bmw_spec, wide_turn_path,
+                             simConfig, stanley_2_0};
+  Scenario stanley_s_curve{"stanley_s_curve", bmw_spec, s_curve, simConfig,
+                           stanley_2_0};
+  std::vector<Scenario> scenario_list{stanley_wide_turn, stanley_s_curve};
   std::cout << "Starting simulation..." << std::endl;
-  SimulationLog log = runScenario(basic_stanley, stanley_2_0);
-  writeLogToFile(log);
+  std::vector<ScenarioRunResult> results = runScenario(scenario_list);
+  // SimulationLog log = runScenario(basic_stanley, stanley_2_0);
+  double a = 0.0;
+  // writeLogToFile(results);
+  writeResults(results);
+  // writeScenarioToYaml(results);
 }

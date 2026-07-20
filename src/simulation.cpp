@@ -1,5 +1,5 @@
 #include "agv_sim/simulation.hpp"
-#include "agv_sim/csv_handling.hpp"
+#include "agv_sim/simulation_output.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -47,7 +47,7 @@ SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
 SimulationSample
 makeSimulationSample(double time, const Vehicle &vehicle,
                      const ControllerDebugInfo &controller_info) {
-  return SimulationSample{
+  SimulationSample sample{
       .time = time,
       .x = vehicle.getX(),
       .y = vehicle.getY(),
@@ -61,14 +61,28 @@ makeSimulationSample(double time, const Vehicle &vehicle,
       .pursuit_controller_alpha = controller_info.pursuit_controller_alpha,
       .lateral_error = controller_info.lateral_error,
       .current_waypoint_index = controller_info.current_waypoint_index};
+  return sample;
 }
 
-SimulationLog runScenario(Scenario &scenario, ControllerSpec &controller_spec) {
-  Vehicle vehicle{scenario.vehicle.initial_state,
-                  scenario.vehicle.vehicle_limits};
-  Path path{fileToWaypoints(scenario.path_file)};
-  auto controller = createController(controller_spec);
-  SimulationLog log =
-      runSimulation(vehicle, path, scenario.simulation_config, *controller);
-  return SimulationLog{};
+std::vector<ScenarioRunResult>
+runScenario(const std::vector<Scenario> &scenario_list) {
+  std::vector<ScenarioRunResult> scenario_results{};
+  for (auto scenario : scenario_list) {
+    Vehicle vehicle{scenario.vehicle.initial_state,
+                    scenario.vehicle.vehicle_limits};
+    std::cout << scenario.name << scenario.path_file << std::endl;
+    Path path{fileToWaypoints(scenario.path_file)};
+    auto controller = createController(scenario.controller_spec);
+    SimulationLog log =
+        runSimulation(vehicle, path, scenario.simulation_config, *controller);
+    ScenarioRunManifest scenario_info{.scenario_name = scenario.name,
+                                      .path_original_location =
+                                          scenario.path_file};
+    ScenarioRunResult last_result{
+        log = log,
+        .scenario_info = scenario_info,
+    };
+    scenario_results.push_back(ScenarioRunResult{last_result});
+  }
+  return scenario_results;
 }

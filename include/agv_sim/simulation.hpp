@@ -46,6 +46,11 @@ struct SimulationSample {
   }
 };
 
+struct ScenarioRunManifest {
+  std::string scenario_name;
+  std::string path_original_location;
+};
+
 using SimulationLog = std::vector<SimulationSample>;
 
 struct Scenario {
@@ -53,13 +58,19 @@ struct Scenario {
   VehicleSpec vehicle;
   std::filesystem::path path_file;
   SimulationConfig simulation_config;
+  ControllerSpec controller_spec;
+};
+struct ScenarioRunResult {
+  SimulationLog log;
+  ScenarioRunManifest scenario_info;
 };
 
 SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             const SimulationConfig &config,
                             IPathTrackingController &controller);
 
-SimulationLog runScenario(Scenario &scenario, ControllerSpec &controller_spec);
+std::vector<ScenarioRunResult>
+runScenario(const std::vector<Scenario> &scenarios);
 
 SimulationSample
 makeSimulationSample(double time, const Vehicle &vehicle,

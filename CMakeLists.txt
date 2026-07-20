@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(agv_sim_lib
     src/vehicle.cpp
     src/simulation.cpp
-    src/csv_handling.cpp
+    src/simulation_output.cpp
     src/pure_pursuit_controller.cpp
     src/path.cpp
     src/path_geometry.cpp
