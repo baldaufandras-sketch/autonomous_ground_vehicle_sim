@@ -5,6 +5,8 @@ project(MySimulation LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+
 add_library(agv_sim_lib
     src/vehicle.cpp
     src/simulation.cpp
@@ -53,3 +55,10 @@ target_link_libraries(test_pure_pursuit_controller
 )
 
 gtest_discover_tests(test_pure_pursuit_controller)
+
+find_package(yaml-cpp REQUIRED)
+
+target_link_libraries(agv_sim_lib
+    PRIVATE
+        yaml-cpp::yaml-cpp
+)

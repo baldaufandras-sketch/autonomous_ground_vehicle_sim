@@ -17,7 +17,6 @@ SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             const SimulationConfig &config,
                             IPathTrackingController &controller) {
   SimulationLog log;
-  std::cout << "run simulation did start" << std::endl;
   double time = 0.0;
 
   while (time <= config.end_time) {
@@ -70,7 +69,6 @@ runScenario(const std::vector<Scenario> &scenario_list) {
   for (auto scenario : scenario_list) {
     Vehicle vehicle{scenario.vehicle.initial_state,
                     scenario.vehicle.vehicle_limits};
-    std::cout << scenario.name << scenario.path_file << std::endl;
     Path path{fileToWaypoints(scenario.path_file)};
     auto controller = createController(scenario.controller_spec);
     SimulationLog log =

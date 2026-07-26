@@ -10,7 +10,6 @@ void writeLogToFile(SimulationLog log,
               << std::filesystem::absolute(file_location) << '\n';
     return;
   }
-  std::cout << "I am writing here: " << file_location << std::endl;
   file << SimulationSample::csvHeader() << "\n";
 
   for (const auto &sample : log) {

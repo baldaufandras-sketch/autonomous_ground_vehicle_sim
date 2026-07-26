@@ -69,7 +69,7 @@ Testing/
 .cache/
 
 # generated log files
-data/
+data/results
 
 # VS code settings
 .vscode/
