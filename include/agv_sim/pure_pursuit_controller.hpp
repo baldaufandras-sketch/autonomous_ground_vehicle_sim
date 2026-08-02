@@ -8,9 +8,13 @@
 #include <vector>
 
 struct PurePursuitConfig {
-  double lookahead_distance{3};
-  double wheelbase{1};
-  double fallback_steering_angle{constants::pi / 6};
+  /*PurePursuitConfig(double lookahead_distance, double wheelbase,
+                    double fallback_steering_angle)
+      : lookahead_distance{lookahead_distance}, wheelbase{wheelbase},
+        fallback_steering_angle{fallback_steering_angle} {}*/
+  double lookahead_distance{};
+  double wheelbase{};
+  double fallback_steering_angle{};
 };
 
 struct SteeringCalculationResult {
@@ -44,7 +48,7 @@ private:
 
   double computeAcceleration(const std::vector<Waypoint> &waypoints) const;
 
-  PurePursuitConfig config_{};
+  PurePursuitConfig config_;
   std::size_t current_waypoint_index_{0};
   ControllerDebugInfo debug_info_;
 };

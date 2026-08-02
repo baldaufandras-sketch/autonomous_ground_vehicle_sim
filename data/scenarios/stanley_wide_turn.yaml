@@ -1,0 +1,24 @@
+name: straight_stanley
+
+vehicle:
+  wheelbase: 2.7
+  initial_position:
+    - 0.0
+    - 1.0
+  initial_speed: 5
+  initial_heading: 0
+
+vehicle limits:
+  maximum steering angle in radian: 6
+  maximum steering angle gradient in radian: 0.5
+
+path_file_location: "data/paths/wide_turn_path.csv"
+
+controller:
+  name: High_gain_stanley
+  type: Stanley
+  gain: 1.2
+
+simulation:
+  length: 10
+  timestep: 0.01

@@ -10,6 +10,9 @@
 
 int main() {
   double lookahead_distance{3};
+  Scenario dummy =
+      loadScenarioFromYaml("data/scenarios/stanley_wide_turn.yaml");
+  std::cout << dummy.path_file << std::endl;
   SimulationConfig simConfig{15, 0.1};
   VehicleLimits bmw_limits{constants::pi / 6, constants::pi};
   VehicleState init_state{.x = 0.0,
@@ -29,7 +32,8 @@ int main() {
                              simConfig, stanley_2_0};
   Scenario stanley_s_curve{"stanley_s_curve", bmw_spec, s_curve, simConfig,
                            stanley_2_0};
-  std::vector<Scenario> scenario_list{stanley_wide_turn, stanley_s_curve};
+  std::vector<Scenario> scenario_list{dummy, stanley_wide_turn,
+                                      stanley_s_curve};
   std::cout << "Starting simulation..." << std::endl;
   std::vector<ScenarioRunResult> results = runScenario(scenario_list);
   // SimulationLog log = runScenario(basic_stanley, stanley_2_0);

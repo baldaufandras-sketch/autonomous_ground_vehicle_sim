@@ -75,3 +75,5 @@ runScenario(const std::vector<Scenario> &scenarios);
 SimulationSample
 makeSimulationSample(double time, const Vehicle &vehicle,
                      const ControllerDebugInfo &controller_info);
+
+Scenario loadScenarioFromYaml(const std::filesystem::path &yaml_path);
