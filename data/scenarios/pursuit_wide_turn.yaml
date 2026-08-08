@@ -1,4 +1,4 @@
-name: Wide turn with Stanley controller
+name: Pure pursuit with wide turn
 
 vehicle:
   wheelbase: 2.7
@@ -15,9 +15,10 @@ vehicle limits:
 path_file_location: "data/paths/wide_turn_path.csv"
 
 controller:
-  name: High_gain_stanley
-  type: Stanley
-  gain: 1.2
+  name: Classic Pursuit
+  type: PurePursuit
+  lookahead distance: 3
+  fallback steering angle: 0.6
 
 simulation:
   length: 10

@@ -8,37 +8,48 @@
 #include <iostream>
 #include <vector>
 
-int main() {
-  double lookahead_distance{3};
-  Scenario dummy =
-      loadScenarioFromYaml("data/scenarios/stanley_wide_turn.yaml");
-  std::cout << dummy.path_file << std::endl;
-  SimulationConfig simConfig{15, 0.1};
-  VehicleLimits bmw_limits{constants::pi / 6, constants::pi};
-  VehicleState init_state{.x = 0.0,
-                          .y = -5.0,
-                          .speed = 10,
-                          .heading = -constants::pi / 6,
-                          .steering_angle = 0.0};
+int main(int argc, char *argv[]) {
+  std::string command;
+  if (argc < 2) {
+    command = "all";
+  } else {
+    command = argv[1];
+  }
+  std::filesystem::path folder = "data/scenarios";
+  std::vector<std::filesystem::path> yaml_list{};
+  std::vector<Scenario> scenario_list{};
+  for (const auto &entry : std::filesystem::directory_iterator(folder)) {
+    // std::cout << entry << '\n';
+    yaml_list.push_back(entry.path());
+  }
 
-  VehicleSpec bmw_spec{init_state, bmw_limits};
-  std::string name{"basic_stanley"};
-  ControllerSpec stanley_2_0 = makeStanleySpec(name, StanleyConfig{2});
-  ControllerSpec stanley_0_5 = makeStanleySpec(name, StanleyConfig{0.5});
+  if (command == "list") {
+    for (auto scenario : yaml_list) {
+      std::cout << scenario << '\n';
+    }
+    return 1;
 
-  std::filesystem::path wide_turn_path{"data/paths/wide_turn_path.csv"};
-  std::filesystem::path s_curve{"data/paths/s_curve.csv"};
-  Scenario stanley_wide_turn{"stanley_wide_turn", bmw_spec, wide_turn_path,
-                             simConfig, stanley_2_0};
-  Scenario stanley_s_curve{"stanley_s_curve", bmw_spec, s_curve, simConfig,
-                           stanley_2_0};
-  std::vector<Scenario> scenario_list{dummy, stanley_wide_turn,
-                                      stanley_s_curve};
-  std::cout << "Starting simulation..." << std::endl;
+  } else if (command == "all") {
+
+    for (const auto &entry : yaml_list) {
+      std::cout << "loading scenario " << entry << std::endl;
+      scenario_list.push_back(loadScenarioFromYaml(entry));
+    }
+
+  } else {
+    bool scenario_found{false};
+    for (const auto &scenario_path : yaml_list) {
+      if (scenario_path.stem().string() == command) {
+        std::cout << "Scenario found. Loading " << scenario_path.stem().string()
+                  << std::endl;
+        scenario_list.push_back(loadScenarioFromYaml(scenario_path));
+        scenario_found = true;
+      }
+    }
+    if (!scenario_found) {
+      std::cout << "No scenario found: " << command << std::endl;
+    }
+  }
   std::vector<ScenarioRunResult> results = runScenario(scenario_list);
-  // SimulationLog log = runScenario(basic_stanley, stanley_2_0);
-  double a = 0.0;
-  // writeLogToFile(results);
   writeResults(results);
-  // writeScenarioToYaml(results);
 }
