@@ -19,7 +19,6 @@ int main(int argc, char *argv[]) {
   std::vector<std::filesystem::path> yaml_list{};
   std::vector<Scenario> scenario_list{};
   for (const auto &entry : std::filesystem::directory_iterator(folder)) {
-    // std::cout << entry << '\n';
     yaml_list.push_back(entry.path());
   }
 
@@ -37,13 +36,17 @@ int main(int argc, char *argv[]) {
     }
 
   } else {
+
     bool scenario_found{false};
-    for (const auto &scenario_path : yaml_list) {
-      if (scenario_path.stem().string() == command) {
-        std::cout << "Scenario found. Loading " << scenario_path.stem().string()
-                  << std::endl;
-        scenario_list.push_back(loadScenarioFromYaml(scenario_path));
-        scenario_found = true;
+    for (int i = 1; i < argc; ++i) {
+      std::string current_command = argv[i];
+      for (const auto &scenario_path : yaml_list) {
+        if (scenario_path.stem().string() == current_command) {
+          std::cout << "Scenario found. Loading "
+                    << scenario_path.stem().string() << std::endl;
+          scenario_list.push_back(loadScenarioFromYaml(scenario_path));
+          scenario_found = true;
+        }
       }
     }
     if (!scenario_found) {
