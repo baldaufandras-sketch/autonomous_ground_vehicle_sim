@@ -2,25 +2,6 @@
 
 ## Current Milestone
 
-Version 0.5 — Configurable Scenario Execution
-
-Move scenario definitions out of the source code and provide a usable command-line workflow.
-
-Define a documented YAML scenario format.
-Load vehicle, simulation, controller, and path parameters from YAML.
-Allow a scenario to reference an external path file or define its target path in the chosen supported format.
-Validate required fields, parameter ranges, controller names, and referenced files.
-Provide several representative scenarios with the repository.
-Add command-line options for running:
-one selected scenario,
-several selected scenarios, or
-all scenarios in the default scenario directory.
-Report configuration errors clearly without crashing or silently using unintended values.
-
-Definition of done: No scenario-specific vehicle or controller configuration needs to be hardcoded in main.cpp.
-
-## Planned Milestones
-
 ### Version 0.6 — Automated Result Evaluation
 
 - Define supported metrics
@@ -28,6 +9,8 @@ Definition of done: No scenario-specific vehicle or controller configuration nee
 - Process every scenario in a run directory
 - Generate and save standard plots
 - Store complete effective scenario configuration with the results
+
+## Planned Milestones
 
 ### Version 0.7 — Controller Comparison Workflow
 
@@ -90,3 +73,16 @@ Establish the internal architecture required to simulate different path-tracking
 - Added timestamped result directories
 - Added per-scenario logs and basic manifests
 
+### Version 0.5 — "Please choose from the menu"
+
+Move scenario configuration out of the source code and establish a practical command-line workflow for running simulations.
+
+- Added a documented YAML scenario format
+- Added YAML loading for vehicle, simulation, controller, and path parameters
+- Added support for externally referenced path files
+- Added validation for required fields, controller types, parameter values, and referenced files
+- Added representative scenario files to the repository
+- Added command-line execution for single, multiple, and all scenarios
+- Added command-line execution to list all available scenario definitions
+- Improved configuration  handling and reporting
+- Established YAML files as the main user-facing scenario configuration interface
