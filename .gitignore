@@ -76,3 +76,5 @@ data/results
 
 # temporary scripts
 scratch/
+
+__pycache__/

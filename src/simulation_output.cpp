@@ -78,6 +78,9 @@ void writeResults(const std::vector<ScenarioRunResult> &scenario_list) {
     std::filesystem::create_directories(scenario_directory);
     writeLogToFile(scenario.log, scenario_directory);
     writeScenarioToYaml(scenario.scenario_info, scenario_directory);
+    std::filesystem::path path_target_loc = scenario_directory / "path.csv";
+    std::filesystem::copy(scenario.scenario_info.path_original_location,
+                          path_target_loc);
   }
 }
 
