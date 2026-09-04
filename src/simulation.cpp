@@ -18,8 +18,9 @@ SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                             IPathTrackingController &controller) {
   SimulationLog log;
   double time = 0.0;
-
-  while (time <= config.end_time) {
+  double actual_speed = 10;
+  bool stop_simulation{false};
+  while (!stop_simulation) {
     // add current state to log
 
     // update controller
@@ -37,7 +38,11 @@ SimulationLog runSimulation(Vehicle &vehicle, const Path &path,
                                          controller.getControllerDebugInfo()));
       break;
     }
+    actual_speed = vehicle.getSpeed();
     time += config.dt.seconds;
+    if ((actual_speed == 0) || time >= config.end_time) {
+      stop_simulation = true;
+    }
   }
 
   return log;

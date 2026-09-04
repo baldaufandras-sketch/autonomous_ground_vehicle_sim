@@ -1,5 +1,5 @@
 #This name will appear on plots and folder names
-name: Pure pursuit with wide turn
+name: Pure pursuit figure eight
 
 # Units are in SI [m] and [m/s]
 vehicle:
@@ -7,27 +7,27 @@ vehicle:
   initial_position:
     - 0.0
     - 1.0
-  initial_speed: 5.0
+  initial_speed: 7.0
   initial_heading: 0
 
 #Units are in radians
 vehicle limits:
-  maximum steering angle in radian: 6
+  maximum steering angle in radian: 0.6
   maximum steering angle gradient in radian: 0.5
 
-path_file_location: "data/paths/wide_turn_path.csv"
+path_file_location: "data/paths/tight_chicane_path.csv"
 
 controller:
   name: Classic Pursuit
   #Valid types: PurePursuit, Stanley
   type: PurePursuit
   #For PurePursuit type the following fileds are needed:
-  lookahead distance: 3
+  lookahead distance: 5
   fallback steering angle: 0.6
   #For Stanley type the following fileds are needed:
   gain: 2
 
 #Units are in seconds
 simulation:
-  length: 10
+  length: 30
   timestep: 0.01

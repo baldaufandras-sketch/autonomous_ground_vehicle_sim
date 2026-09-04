@@ -1,5 +1,5 @@
 #This name will appear on plots and folder names
-name: Stanley with wide turn
+name: Stanley figure eight
 
 # Units are in SI [m] and [m/s]
 vehicle:
@@ -15,7 +15,7 @@ vehicle limits:
   maximum steering angle in radian: 6
   maximum steering angle gradient in radian: 0.5
 
-path_file_location: "data/paths/wide_turn_path.csv"
+path_file_location: "data/paths/tight_chicane_path.csv"
 
 controller:
   name: Stanley 1.2

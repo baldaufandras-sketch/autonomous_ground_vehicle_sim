@@ -13,7 +13,8 @@ void writeLogToFile(SimulationLog log,
                     const std::filesystem::path folder_location);
 void writeScenarioToYaml(ScenarioRunManifest manifest,
                          const std::filesystem::path folder_location);
-void writeResults(const std::vector<ScenarioRunResult> &scenario_list);
+std::filesystem::path
+writeResults(const std::vector<ScenarioRunResult> &scenario_list);
 void waypointsToFile(const std::vector<Waypoint> &waypoints);
 std::string createTimestamp();
 Path fileToWaypoints(const std::filesystem::path &folder_location);

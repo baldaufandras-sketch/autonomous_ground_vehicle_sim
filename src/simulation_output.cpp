@@ -65,9 +65,11 @@ void writeScenarioToYaml(ScenarioRunManifest manifest,
   file << "Scenario name: " << manifest.scenario_name << "\n";
   file << "Waypoint soure location: " << manifest.path_original_location
        << "\n";
+  file << "Maximum steering angle in radian: " << manifest.
 }
 
-void writeResults(const std::vector<ScenarioRunResult> &scenario_list) {
+std::filesystem::path
+writeResults(const std::vector<ScenarioRunResult> &scenario_list) {
   std::filesystem::path results_directory = "data/results";
   std::filesystem::path run_directory =
       results_directory / ("run_" + createTimestamp());
@@ -82,6 +84,7 @@ void writeResults(const std::vector<ScenarioRunResult> &scenario_list) {
     std::filesystem::copy(scenario.scenario_info.path_original_location,
                           path_target_loc);
   }
+  return run_directory;
 }
 
 std::string createTimestamp() {

@@ -1,8 +1,10 @@
 import numpy as np
 from numpy.typing import NDArray
 
+#def rms_cross_track_error(data, waypoints):
+#    for i in range(len(path) - 1):
 
-def actual_path_error(path, actual_location: NDArray):
+def current_path_error(path, actual_location: NDArray):
     error = 1000
     projected_point = np.array([0, 0])
 

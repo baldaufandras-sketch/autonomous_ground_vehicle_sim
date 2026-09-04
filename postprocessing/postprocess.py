@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from plots import plot_trajectory, plot_trajectory_with_projected_points
+from plots import plot_trajectory, plot_trajectory_with_projected_points, create_scenario_dashboard
 import matplotlib.pyplot as plt
 
 def postprocess(run_folder):
@@ -10,7 +10,7 @@ def postprocess(run_folder):
         print("Result folder does not exist")
         return
     for item in run_folder.iterdir():
-        plot_trajectory_with_projected_points(item)
+        create_scenario_dashboard(item)
         
     plt.show()
 

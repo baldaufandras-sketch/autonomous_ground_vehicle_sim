@@ -4,7 +4,7 @@
 #include "agv_sim/simulation_output.hpp"
 #include "agv_sim/stanley_controller.hpp"
 #include "agv_sim/vehicle.hpp"
-
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 
@@ -53,6 +53,15 @@ int main(int argc, char *argv[]) {
       std::cout << "No scenario found: " << command << std::endl;
     }
   }
+  // std::cout << argv[argc - 1] << std::endl;
   std::vector<ScenarioRunResult> results = runScenario(scenario_list);
-  writeResults(results);
+  std::filesystem::path run_directory = writeResults(results);
+  if (std::string(argv[argc - 1]) == "--postprocess") {
+    std::cout << "was postprocess" << std::endl;
+    std::string command =
+        "/home/andras/.venvs/vscode/bin/python postprocessing/postprocess.py " +
+        run_directory.filename().string();
+    std::cout << command << std::endl;
+    int return_code = std::system(command.c_str());
+  }
 }
